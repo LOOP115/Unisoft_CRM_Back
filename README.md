@@ -1,4 +1,4 @@
-#WARNINGS: READ BEFORE PLAYING
+# WARNINGS: READ BEFORE PLAYING
 
 Photosensitivity / epileptic seizures:
 
