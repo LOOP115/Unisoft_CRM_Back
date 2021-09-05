@@ -1,9 +1,14 @@
-from flask import Flask, redirect, url_for
+from website import create_app
+from flask import redirect, url_for
 from pymongo import MongoClient
 from flask_cors import CORS, cross_origin
 import json
 
-app = Flask(__name__)
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -19,12 +24,9 @@ def addname(name):
 
 @app.route('/getnames/')
 def getnames():
-    names_json = []
+    names_json = [] 
     if names_col.find({}):
         for name in names_col.find({}).sort("name"):
             names_json.append({"name": name['name'], "id": str(name['_id'])})
     return json.dumps(names_json)
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
