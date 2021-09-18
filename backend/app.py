@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-    :author: Grey Li (李辉)
-    :url: http://greyli.com
-    :copyright: © 2018 Grey Li
-    :license: MIT, see LICENSE for more details.
-"""
 import os
 import sys
 
@@ -280,9 +273,3 @@ class Draft(db.Model):
 def increment_edit_time(target, value, oldvalue, initiator):
     if target.edit_time is not None:
         target.edit_time += 1
-
-# same with:
-# @db.event.listens_for(Draft.body, 'set', named=True)
-# def increment_edit_time(**kwargs):
-#     if kwargs['target'].edit_time is not None:
-#         kwargs['target'].edit_time += 1
