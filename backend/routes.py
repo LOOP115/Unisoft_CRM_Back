@@ -84,7 +84,3 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_img/' + current_user.image_file)
     return rt('account.html', title='Account', image_file=image_file, form=form)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
