@@ -1,9 +1,11 @@
 import os
 import secrets
 from PIL import Image
+from flask import Flask, jsonify, json
 from flask import render_template as rt
 from flask import url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_restful import Resource, reqparse
 
 from backend import app, db, bcrypt
 from backend.models import User
@@ -13,74 +15,99 @@ from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 @app.route('/')
 @app.route('/home')
 def home():
-    return rt("home.html")
+    return "HomePage"
 
 
-@app.route("/register", methods=['GET', 'POST'])
+def valid_account(username, email):
+    has_username = User.query.filter_by(username=username).first()
+    has_email = User.query.filter_by(email=email).first()
+    if has_username and has_email:
+        return "User and email have been taken"
+    if has_username:
+        return "The username has been taken"
+    if has_email:
+        return "The email has been taken"
+    return "Valid"
+
+
+@app.route("/register", methods=['POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    request_data = json.loads(request.data)
+    valid_result = valid_account(request_data['username'], request_data['email'])
+    if (valid_result == "Valid"):
+        user = User(username=request_data['username'], email=request_data['email'], password=request_data['password'])
         db.session.add(user)
         db.session.commit()
-        flash('Welcome! You are now able to log in', 'success')
-        return redirect(url_for('login'))
-    return rt('register.html', title='Register', form=form)
+        return {'201': f"Welcome {request_data['username']}"}
+    return valid_result
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
-        else:
-            flash('Invalid email or password', 'danger')
-    return rt('login.html', title='Login', form=form)
+    request_data = json.loads(request.data)
+    user = User.query.filter_by(email=request_data['email']).first()
+    if user and (request_data['password'] == user.password):
+        login_user(user, remember=request_data)
+        return {'201': f"Hi {current_user.username}"}
+    return {'error': "Invalid email or password"}
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return "Exit"
 
 
-def save_picture_profile(form_picture):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_img', picture_fn)
+# def save_picture_profile(form_picture):
+#     random_hex = secrets.token_hex(8)
+#     _, f_ext = os.path.splitext(form_picture.filename)
+#     picture_fn = random_hex + f_ext
+#     picture_path = os.path.join(app.root_path, 'static/profile_img', picture_fn)
 
-    output_size = (125, 125)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-    return picture_fn
+#     output_size = (125, 125)
+#     i = Image.open(form_picture)
+#     i.thumbnail(output_size)
+#     i.save(picture_path)
+#     return picture_fn
+
+
+def valid_account_update(username, email, request_data):
+    has_username = False
+    has_email = False
+    count = 2
+    if request_data['username'] != current_user.username:
+        has_username = User.query.filter_by(username=username).first()
+        count -= 1
+    if request_data['email'] != current_user.email:
+        has_email = User.query.filter_by(email=email).first()
+        count -= 1
+    if has_username and has_email:
+        return "User and email have been taken"
+    if has_username:
+        return "The username has been taken"
+    if has_email:
+        return "The email has been taken"
+    if count == 2:
+        return "No change"
+    return "Valid"
 
 
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
-    form = UpdateAccountForm()
-    if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_picture_profile(form.picture.data)
-            current_user.image_file = picture_file
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        db.session.commit()
-        flash('Your profile has been updated!', 'success')
-        return redirect(url_for('account'))
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.email.data = current_user.email
-    image_file = url_for('static', filename='profile_img/' + current_user.image_file)
-    return rt('account.html', title='Account', image_file=image_file, form=form)
+    if request.method == 'GET':
+        return {
+            "username": current_user.username,
+            "email": current_user.email
+        }
+
+    if request.method == 'POST':
+        request_data = json.loads(request.data)
+        valid_result = valid_account_update(request_data['username'], request_data['email'], request_data)
+        if (valid_result == "Valid"):
+            current_user.username = request_data['username']
+            current_user.email = request_data['email']
+            db.session.commit()
+            return {'201': f"Update success. Hi, {current_user.username}"}
+        return valid_result
