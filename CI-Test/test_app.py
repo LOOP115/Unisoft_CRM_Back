@@ -13,4 +13,4 @@ def test():
   assert app.home() != "HomePage"
   
   response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 100})
-  assert response != {"someData":"hello", "exampleData": 100}
+  assert response != 200
