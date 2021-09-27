@@ -10,7 +10,7 @@ response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 
 #response = requests.post(BASE + "test/jack")
 
 def test():
-  assert app.home() == "HomePage"
+  assert app.home() == "HomePageCCCC"
   
 def test_put():
   response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 100})
