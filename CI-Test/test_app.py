@@ -1,4 +1,6 @@
 import app
 
 def test():
-  assert app.home() == "HomePage"
+  if app.home() != "HomePage":
+    return 0
+  return 1
