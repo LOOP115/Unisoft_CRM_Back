@@ -1,4 +1,4 @@
 import app
 
 def test():
-  assert app.home() == "HomePage"
+  assert app.home() == "Page"
