@@ -10,9 +10,6 @@ response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 
 #response = requests.post(BASE + "test/jack")
 
 def test():
-  if app.home() != "HomePage":
-    assert app.home() != "HomePage"
-  
+  assert app.home() == "HomePage"
   response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 100})
-  if response != "xxxxxx":
-    assert response != "xxxxxx"
+  assert response == "xxxxxx"
