@@ -34,4 +34,6 @@ jobs:
     - name: Test with pytest
       run: 
         export PYTHONPATH=IT_Project
-        pytest test_app.py
+        pip install pytest-cov
+        pip install pytest
+        pytest test_app.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
