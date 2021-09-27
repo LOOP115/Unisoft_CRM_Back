@@ -1,4 +1,5 @@
 import React from "react";
+import {Link, Redirect} from "react-router-dom";
 
 
 function Header(){
@@ -14,12 +15,12 @@ function Header(){
 
 
 function firstButton(){
-  return (<button className = "btn1">Sign up</button>);
+  return (<Link to={"signup"}><button className = "btn1">Sign up</button></Link>);
 }
 
 
 function secondtButton(){
-  return (<button className = "btn2">Log in</button> );
+  return (<Link to={"login"}><button className = "btn2">Log in</button></Link>);
 }
 
 export default Header;

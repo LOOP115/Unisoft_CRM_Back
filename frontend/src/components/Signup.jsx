@@ -9,11 +9,11 @@ function Signup() {
       <div className="form">
         <form>
           <label>Name: </label>
-          <input name="name" type="text"></input>
+          <input name="name" type="text"/>
           <br />
           <br />
           <label>Email: </label>
-          <input name="email" type="text"></input>
+          <input name="email" type="text"/>
 
           <br />
           <br />
@@ -22,7 +22,7 @@ function Signup() {
           <br />
           <br />
           <label>Re-input Password: </label>
-          <input name="rpassword" type="text"></input>
+          <input name="password" type="text"/>
           <br />
           <br />
         </form>

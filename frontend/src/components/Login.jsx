@@ -9,7 +9,7 @@ function Login() {
       <div className="form">
         <form>
           <label>Email: </label>
-          <input name="email" type="text"></input>
+          <input name="email" type="text"/>
           <br />
           <br />
           <label>Password: </label>
