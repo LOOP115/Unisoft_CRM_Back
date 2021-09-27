@@ -11,5 +11,7 @@ response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 
 
 def test():
   assert app.home() == "HomePage"
+  
+def test_put():
   response = requests.put(BASE + "test/Jack", {"someData":"hello", "exampleData": 100})
   assert response == "xxxxxx"
