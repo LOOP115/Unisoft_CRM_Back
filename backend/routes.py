@@ -38,7 +38,11 @@ def register():
         user = User(username=request_data['username'], email=request_data['email'], password=request_data['password'])
         db.session.add(user)
         db.session.commit()
-        return {'201': f"Welcome {request_data['username']}"}
+        return {
+            "userid": user.id,
+            "username": user.username,
+            "email": user.email
+        }
     return valid_result
 
 
@@ -48,11 +52,16 @@ def login():
     user = User.query.filter_by(email=request_data['email']).first()
     if user and (request_data['password'] == user.password):
         login_user(user, remember=request_data)
-        return {'201': f"Hi {current_user.username}"}
-    return {'error': "Invalid email or password"}
+        return {
+            "userid": current_user.id,
+            "username": current_user.username,
+            "email": current_user.email
+
+        }
+    return {"error": "Invalid email or password"}
 
 
-@app.route("/logout")
+@app.route("/logout", methods=['GET'])
 @login_required
 def logout():
     logout_user()
@@ -98,6 +107,7 @@ def valid_account_update(username, email, request_data):
 def account():
     if request.method == 'GET':
         return {
+            "userid": current_user.id,
             "username": current_user.username,
             "email": current_user.email
         }
@@ -109,5 +119,9 @@ def account():
             current_user.username = request_data['username']
             current_user.email = request_data['email']
             db.session.commit()
-            return {'201': f"Update success. Hi, {current_user.username}"}
+            return {
+                "userid": current_user.id,
+                "username": current_user.username,
+                "email": current_user.email
+            }
         return valid_result
