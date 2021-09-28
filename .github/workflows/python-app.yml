@@ -41,4 +41,6 @@ jobs:
         FLASK_ENV: development
         API_HOST: 0.0.0.0
         FLASK_APP: app.py
+        DB_NAME: backend/site.db
+        DB_HOST: localhost
         CI: true
