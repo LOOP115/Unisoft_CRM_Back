@@ -34,8 +34,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        flask run &
-        sleep 2
+        flask run
         pytest
       env:
         FLASK_ENV: development
