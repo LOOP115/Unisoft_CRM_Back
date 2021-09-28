@@ -38,8 +38,8 @@ def register():
         user = User(username=request_data['username'], email=request_data['email'], password=request_data['password'])
         db.session.add(user)
         db.session.commit()
-        return {'201': f"Welcome {request_data['username']}"}
-    return valid_result
+        return {}, 201
+    return {"data":valid_result}, 301
 
 
 @app.route("/login", methods=['POST'])
