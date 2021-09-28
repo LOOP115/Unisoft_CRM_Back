@@ -91,11 +91,11 @@ def valid_account_update(username, email, request_data):
         has_email = User.query.filter_by(email=email).first()
         count -= 1
     if has_username and has_email:
-        return "User and email have been taken"
+        return "Username and email have been taken"
     if has_username:
-        return "The username has been taken"
+        return "Username has been taken"
     if has_email:
-        return "The email has been taken"
+        return "Email has been taken"
     if count == 2:
         return "No change"
     return "Valid"
@@ -123,4 +123,4 @@ def account():
                 "username": current_user.username,
                 "email": current_user.email
             }
-        return valid_result
+        return {"error": valid_result}, 300
