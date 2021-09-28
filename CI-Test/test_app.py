@@ -19,10 +19,12 @@ def test_login():
   response = requests.post(BASE + "login", json= r)
   assert response.status_code!=404 and response.status_code!=500
 
-# test
+# test whether registered account can log in or not
 def test_valid_login():
   response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":123456})
   if(response.status_code == 500 or response.status_code == 404):
     assert response.status_code!=404 and response.status_code!=500
+  
   requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":123456})
+
   
