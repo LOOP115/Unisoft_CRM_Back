@@ -12,21 +12,21 @@ from backend.models import User
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 
-@app.route('/')
-@app.route('/home')
-def home():
-    return "HomePage"
+# @app.route('/')
+# @app.route('/home')
+# def home():
+#     return "HomePage"
 
 
 def valid_account(username, email):
     has_username = User.query.filter_by(username=username).first()
     has_email = User.query.filter_by(email=email).first()
     if has_username and has_email:
-        return "User and email have been taken"
+        return "Username and email have been taken"
     if has_username:
-        return "The username has been taken"
+        return "Username has been taken"
     if has_email:
-        return "The email has been taken"
+        return "Email has been taken"
     return "Valid"
 
 
@@ -43,7 +43,7 @@ def register():
             "username": user.username,
             "email": user.email
         }, 200
-    return {"register error": valid_result}, 300
+    return {"error": valid_result}, 300
 
 
 @app.route("/login", methods=['POST'])
@@ -64,7 +64,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return "Exit"
+    return "exit"
 
 
 # def save_picture_profile(form_picture):
