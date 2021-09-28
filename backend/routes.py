@@ -6,8 +6,9 @@ from flask import render_template as rt
 from flask import url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_restful import Resource, reqparse
+from flask_mail import Message
 
-from backend import app, db, bcrypt
+from backend import app, db, bcrypt, mail
 from backend.models import User
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
@@ -15,7 +16,7 @@ from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 # @app.route('/')
 # @app.route('/home')
 # def home():
-#     return "HomePage"
+#     return "home"
 
 
 def valid_account(username, email):
@@ -56,7 +57,7 @@ def login():
             "userid": current_user.id,
             "username": current_user.username,
             "email": current_user.email
-        }
+        }, 200
     return {"error": "Invalid email or password"}, 300
 
 
@@ -124,3 +125,43 @@ def account():
                 "email": current_user.email
             }
         return {"error": valid_result}, 300
+
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request',
+                  sender='noreply@unisoft.com',
+                  recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+http://127.0.0.1:5000//reset_password/{token}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
+
+
+@app.route("/reset_password", methods=['POST'])
+def reset_request():
+    request_data = json.loads(request.data)
+    user = User.query.filter_by(email=request_data['email']).first()
+    if user:
+        send_reset_email(user)
+        return {"userid": user.id}, 200
+    return {"error": "Invalid email"}, 300
+
+
+@app.route("/reset_password/<token>", methods=['POST'])
+def reset_token(token):
+    user = User.verify_reset_token(token)
+    if user is None:
+        return {"error": "Invalid or expired token"}, 300
+    
+    request_data = json.loads(request.data)
+    user.password = request_data['password']
+    db.session.commit()
+    return {"userid": user.id}, 200
+
+
+
+
+
