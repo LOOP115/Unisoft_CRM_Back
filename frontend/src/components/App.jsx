@@ -5,7 +5,9 @@ import Info from "./Information";
 import CallHomePage from "./CallHomePage"
 import Login from "./Login"
 import Signup from "./Signup";
+import Success from "./Success";
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
 //import AddCard from "./AddCard";
 
 
@@ -30,6 +32,10 @@ function App() {
 
                         <Route exact path="/login">
                             <Login/>
+                        </Route>
+
+                        <Route exact path="/success">
+                            <Success/>
                         </Route>
 
                     </Switch>
