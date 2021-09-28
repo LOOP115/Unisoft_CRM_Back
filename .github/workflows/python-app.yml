@@ -34,12 +34,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        flask run
+        flask run &
+        sleep 2
         pytest
-      env:
-        FLASK_ENV: development
-        API_HOST: 0.0.0.0
-        FLASK_APP: app.py
-        DB_NAME: backend/site.db
-        DB_HOST: localhost
-        CI: true
+
