@@ -1,6 +1,7 @@
 from datetime import datetime
 from backend import db, login_manager
 from flask_login import UserMixin
+import os
 
 
 @login_manager.user_loader
@@ -17,3 +18,6 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
+
+if not os.path.exists("site.db"):
+    db.create_all()

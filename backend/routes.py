@@ -42,8 +42,8 @@ def register():
             "userid": user.id,
             "username": user.username,
             "email": user.email
-        }
-    return valid_result
+        }, 200
+    return {"register error": valid_result}, 300
 
 
 @app.route("/login", methods=['POST'])
@@ -56,9 +56,8 @@ def login():
             "userid": current_user.id,
             "username": current_user.username,
             "email": current_user.email
-
         }
-    return {"error": "Invalid email or password"}
+    return {"error": "Invalid email or password"}, 300
 
 
 @app.route("/logout", methods=['GET'])
