@@ -2,10 +2,6 @@ import requests
 
 BASE = "http://127.0.0.1:5000/"
 
-def test_home():
-  response = requests.get(BASE + "home")
-  assert response.status_code != 404 and response.status_code!=500
-
 def test_put():
   response = requests.put(BASE + "test/Jack", json={"someData":"hello", "exampleData": 100})
   assert response.status_code!=404 and response.status_code!=500
@@ -27,4 +23,3 @@ def test_valid_login():
   
   requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":123456})
 
-  
