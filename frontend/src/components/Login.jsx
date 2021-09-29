@@ -18,7 +18,7 @@ function Login(props) {
   function handleClick(e) {
     e.preventDefault()
     /* Send the POST request and save JWT to localStorage */
-    fetch(loginURL, { method: 'POST', credentials: 'include', mode: 'cors',headers: {
+    fetch(loginURL, { method: 'POST', credentials: 'include', headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Credentials': 'true'
 
@@ -34,7 +34,9 @@ function Login(props) {
         })
         .then(data => {
           if (data.hasOwnProperty("error")) throw new Error("Wrong Email/Password")
-          localStorage.setItem("stuff", data["201"])
+          localStorage.setItem("username", data["username"])
+          localStorage.setItem("userID", data["userid"])
+          localStorage.setItem("email", data["email"])
           localStorage.setItem("logIn", "true")
           setRedirect("/success")
 

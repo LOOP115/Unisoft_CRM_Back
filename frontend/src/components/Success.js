@@ -1,13 +1,22 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Button} from "react-bootstrap";
 import { Redirect } from "react-router-dom";
+import Cookies from 'js-cookie';
+import { EndPointContext } from './App'
 
 
-function Success(){
+
+function Success(props){
+
+    const URLEndContext = useContext(EndPointContext)
+    const logoutURL = URLEndContext + '/logout'
+
     const [redirect, setRedirect] = useState(false)
 
     function handleClick(){
-        fetch("http://127.0.0.1:5000/logout", {method:"GET", credentials:"include"}).then
+        fetch(logoutURL, {method:'GET', credentials:'include', headers: {
+                'Content-Type': 'application/json'
+            }}).then
         (res=>{
                 localStorage.clear()
                 setRedirect(true)
@@ -22,7 +31,7 @@ function Success(){
     return(
         <div>
             <h2>
-                {localStorage.getItem("stuff")}
+                {localStorage.getItem("username")}
             </h2>
             <Button onClick={handleClick}>Logout</Button>
         </div>
