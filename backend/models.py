@@ -42,10 +42,12 @@ class Contact(db.Model):
     # date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    company = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Contact('{self.firstname}', '{self.phone}', '{self.email}')"
+        return f"Contact('{self.firstname} {self.lastname}', '{self.phone}', '{self.email}', '{self.company}')"
+
 
 
 

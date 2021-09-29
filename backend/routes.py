@@ -1,5 +1,6 @@
 import os
 import secrets
+import json
 from PIL import Image
 from flask import Flask, jsonify, json
 from flask import render_template as rt
@@ -20,7 +21,6 @@ def home():
 
 # Authentication
 ########################################################################
-
 def valid_account(username, email):
     has_username = User.query.filter_by(username=username).first()
     has_email = User.query.filter_by(email=email).first()
@@ -185,6 +185,19 @@ def reset_token(token):
 
 # Contacts
 ########################################################################
+def contact_serializer(contact):
+    return {
+        "contactid": contact.id,
+        "firstname": contact.firstname,
+        "lastname": contact.lastname,
+        "email": contact.email,
+        "phone": contact.phone,
+        "company": contact.company,
+        "ownerid": current_user.id,
+        "owner": current_user.username
+    }
+
+
 @app.route('/contact/new', methods=['POST'])
 @login_required
 def new_contact():
@@ -195,37 +208,21 @@ def new_contact():
 
     try:
         contact = Contact(firstname=request_data['firstname'], lastname=request_data['lastname'], 
-                          email=request_data['email'], phone=request_data['phone'], owner=current_user)
+                          email=request_data['email'], phone=request_data['phone'], 
+                          company=request_data['company'], owner=current_user)
     except:
         return {"error": "Can't create contact"}, 300
 
     db.session.add(contact)
     db.session.commit()
-    return {
-        "contactid": contact.id,
-        "firstname": contact.firstname,
-        "lastname": contact.lastname,
-        "email": contact.email,
-        "phone": contact.phone,
-        "ownerid": current_user.id,
-        "owner": current_user.username
-    }, 200
+    return contact_serializer(contact), 200
 
 
 @app.route('/contact/<int:contact_id>', methods=['GET'])
 @login_required
 def get_contact(contact_id):
     contact = Contact.query.get_or_404(contact_id)
-    return {
-        "contactid": contact.id,
-        "firstname": contact.firstname,
-        "lastname": contact.lastname,
-        "email": contact.email,
-        "phone": contact.phone,
-        "ownerid": current_user.id,
-        "owner": current_user.username
-    }, 200
-
+    return contact_serializer(contact), 200
 
 @app.route('/contact/<int:contact_id>/delete', methods=['POST'])
 @login_required
@@ -244,17 +241,8 @@ def update_contact(contact_id):
     contact = Contact.query.get_or_404(contact_id)
     if contact.owner != current_user:
         abort(403)
-
     if request.method == 'GET':
-        return {
-            "contactid": contact.id,
-            "firstname": contact.firstname,
-            "lastname": contact.lastname,
-            "email": contact.email,
-            "phone": contact.phone,
-            "ownerid": current_user.id,
-            "owner": current_user.username
-        }, 200
+        return contact_serializer(contact), 200
 
     try:
         request_data = json.loads(request.data)
@@ -265,16 +253,31 @@ def update_contact(contact_id):
     contact.lastname = request_data['lastname']
     contact.email = request_data['email']
     contact.phone = request_data['phone']
+    contact.company = request_data['company']
     db.session.commit()
-    return {
-        "contactid": contact.id,
-        "firstname": contact.firstname,
-        "lastname": contact.lastname,
-        "email": contact.email,
-        "phone": contact.phone,
-        "ownerid": current_user.id,
-        "owner": current_user.username
-    }, 200
+    return contact_serializer(contact), 200
+
+
+@app.route('/contact/all', methods=['GET'])
+@login_required
+def list_contact():
+    userid = current_user.id
+    try:
+        contact_list = Contact.query.filter_by(user_id=userid).all()
+    except:
+        return {"error": "Can't filter"}, 300
+    return jsonify([*map(contact_serializer, contact_list)]), 200
+
+
+@app.route('/contact/<string:company>', methods=['GET'])
+@login_required
+def company_contact(company):
+    userid = current_user.id
+    try:
+        contact_list = Contact.query.filter_by(user_id=userid, company=company).all()
+    except:
+        return {"error": "Can't filter"}, 300
+    return jsonify([*map(contact_serializer, contact_list)]), 200
 
 
 # Activities
