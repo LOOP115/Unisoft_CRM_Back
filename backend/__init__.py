@@ -5,9 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_cors import CORS
 
-app = Flask(__name__, static_folder="../frontend/build")
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ITPROJECT'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -17,8 +16,6 @@ api = Api(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
-
-cors=CORS(app)
 
 # Mail Config
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
