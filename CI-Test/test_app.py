@@ -2,13 +2,9 @@ import requests
 
 BASE = "http://127.0.0.1:5000/"
 
-def test_put():
-  response = requests.put(BASE + "test/Jack", json={"someData":"hello", "exampleData": 100})
-  assert response.status_code!=404 and response.status_code!=500
+#response = requests.get(BASE + "test/Jack")
 
-def test_register():
-  response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":123456})
-  assert response.status_code!=404 and response.status_code!=500
+#response = requests.post(BASE + "test/jack")
 
 def test_home():
   response = requests.get(BASE + "home")

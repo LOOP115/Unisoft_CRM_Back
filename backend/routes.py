@@ -6,75 +6,57 @@ from flask import render_template as rt
 from flask import url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_restful import Resource, reqparse
-from flask_mail import Message
 
-from backend import app, db, bcrypt, mail
-from backend.models import User, Contact
+from backend import app, db, bcrypt
+from backend.models import User
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return "home"
+    return "HomePage"
 
-# Authentication
-########################################################################
 
 def valid_account(username, email):
     has_username = User.query.filter_by(username=username).first()
     has_email = User.query.filter_by(email=email).first()
     if has_username and has_email:
-        return "Username and email have been taken"
+        return "User and email have been taken"
     if has_username:
-        return "Username has been taken"
+        return "The username has been taken"
     if has_email:
-        return "Email has been taken"
+        return "The email has been taken"
     return "Valid"
 
 
 @app.route("/register", methods=['POST'])
 def register():
-    try:
-        request_data = json.loads(request.data)
-    except:
-        return {"error": "Json load error"}, 500
+    request_data = json.loads(request.data)
     valid_result = valid_account(request_data['username'], request_data['email'])
     if (valid_result == "Valid"):
         user = User(username=request_data['username'], email=request_data['email'], password=request_data['password'])
         db.session.add(user)
         db.session.commit()
-        return {
-            "userid": user.id,
-            "username": user.username,
-            "email": user.email
-        }, 200
-    return {"error": valid_result}, 300
+        return {}, 201
+    return {"data":valid_result}, 301
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    try:
-        request_data = json.loads(request.data)
-    except:
-        return {"error": "Json load error"}, 500
-    
+    request_data = json.loads(request.data)
     user = User.query.filter_by(email=request_data['email']).first()
     if user and (request_data['password'] == user.password):
         login_user(user, remember=request_data)
-        return {
-            "userid": current_user.id,
-            "username": current_user.username,
-            "email": current_user.email
-        }, 200
-    return {"error": "Invalid email or password"}, 300
+        return {'201': f"Hi {current_user.username}"}
+    return {'error': "Invalid email or password"}
 
 
-@app.route("/logout", methods=['GET'])
+@app.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return "exit"
+    return "Exit"
 
 
 # def save_picture_profile(form_picture):
@@ -101,11 +83,11 @@ def valid_account_update(username, email, request_data):
         has_email = User.query.filter_by(email=email).first()
         count -= 1
     if has_username and has_email:
-        return "Username and email have been taken"
+        return "User and email have been taken"
     if has_username:
-        return "Username has been taken"
+        return "The username has been taken"
     if has_email:
-        return "Email has been taken"
+        return "The email has been taken"
     if count == 2:
         return "No change"
     return "Valid"
@@ -116,168 +98,16 @@ def valid_account_update(username, email, request_data):
 def account():
     if request.method == 'GET':
         return {
-            "userid": current_user.id,
             "username": current_user.username,
             "email": current_user.email
         }
 
     if request.method == 'POST':
-        try:
-            request_data = json.loads(request.data)
-        except:
-            return {"error": "Json load error"}, 500
-
+        request_data = json.loads(request.data)
         valid_result = valid_account_update(request_data['username'], request_data['email'], request_data)
         if (valid_result == "Valid"):
             current_user.username = request_data['username']
             current_user.email = request_data['email']
             db.session.commit()
-            return {
-                "userid": current_user.id,
-                "username": current_user.username,
-                "email": current_user.email
-            }
-        return {"error": valid_result}, 300
-
-
-def send_reset_email(user):
-    token = user.get_reset_token()
-    msg = Message('Password Reset Request',
-                  sender='noreply@unisoft.com',
-                  recipients=[user.email])
-    msg.body = f'''To reset your password, please visit the following link:
-http://127.0.0.1:5000//reset_password/{token}
-
-If you did not make this request then simply ignore this email and no changes will be made.
-'''
-    mail.send(msg)
-
-
-@app.route("/reset_password", methods=['POST'])
-def reset_request():
-    try:
-        request_data = json.loads(request.data)
-    except:
-        return {"error": "Json load error"}, 500
-
-    user = User.query.filter_by(email=request_data['email']).first()
-    if user:
-        send_reset_email(user)
-        return {"userid": user.id}, 200
-    return {"error": "Invalid email"}, 300
-
-
-@app.route("/reset_password/<token>", methods=['POST'])
-def reset_token(token):
-    user = User.verify_reset_token(token)
-    if user is None:
-        return {"error": "Invalid or expired token"}, 300
-    
-    try:
-        request_data = json.loads(request.data)
-    except:
-        return {"error": "Json load error"}, 500
-
-    user.password = request_data['password']
-    db.session.commit()
-    return {"userid": user.id}, 200
-
-
-# Contacts
-########################################################################
-@app.route('/contact/new', methods=['POST'])
-@login_required
-def new_contact():
-    try:
-        request_data = json.loads(request.data)
-    except:
-        return {"error": "Json load error"}, 500
-
-    try:
-        contact = Contact(firstname=request_data['firstname'], lastname=request_data['lastname'], 
-                          email=request_data['email'], phone=request_data['phone'], owner=current_user)
-    except:
-        return {"error": "Can't create contact"}, 300
-
-    db.session.add(contact)
-    db.session.commit()
-    return {
-        "contactid": contact.id,
-        "firstname": contact.firstname,
-        "lastname": contact.lastname,
-        "email": contact.email,
-        "phone": contact.phone,
-        "ownerid": current_user.id,
-        "owner": current_user.username
-    }, 200
-
-
-@app.route('/contact/<int:contact_id>', methods=['GET'])
-@login_required
-def get_contact(contact_id):
-    contact = Contact.query.get_or_404(contact_id)
-    return {
-        "contactid": contact.id,
-        "firstname": contact.firstname,
-        "lastname": contact.lastname,
-        "email": contact.email,
-        "phone": contact.phone,
-        "ownerid": current_user.id,
-        "owner": current_user.username
-    }, 200
-
-
-@app.route('/contact/<int:contact_id>/delete', methods=['POST'])
-@login_required
-def delete_contact(contact_id):
-    contact = Contact.query.get_or_404(contact_id)
-    if contact.owner != current_user:
-        abort(403)
-    db.session.delete(contact)
-    db.session.commit()
-    return "deleted", 200
-
-
-@app.route('/contact/<int:contact_id>/update', methods=['GET', 'POST'])
-@login_required
-def update_contact(contact_id):
-    contact = Contact.query.get_or_404(contact_id)
-    if contact.owner != current_user:
-        abort(403)
-
-    if request.method == 'GET':
-        return {
-            "contactid": contact.id,
-            "firstname": contact.firstname,
-            "lastname": contact.lastname,
-            "email": contact.email,
-            "phone": contact.phone,
-            "ownerid": current_user.id,
-            "owner": current_user.username
-        }, 200
-
-    try:
-        request_data = json.loads(request.data)
-    except:
-        return {"error": "Json load error"}, 500
-
-    contact.firstname = request_data['firstname']
-    contact.lastname = request_data['lastname']
-    contact.email = request_data['email']
-    contact.phone = request_data['phone']
-    db.session.commit()
-    return {
-        "contactid": contact.id,
-        "firstname": contact.firstname,
-        "lastname": contact.lastname,
-        "email": contact.email,
-        "phone": contact.phone,
-        "ownerid": current_user.id,
-        "owner": current_user.username
-    }, 200
-
-
-# Activities
-########################################################################
-
-
+            return {'201': f"Update success. Hi, {current_user.username}"}
+        return valid_result
