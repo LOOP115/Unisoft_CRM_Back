@@ -12,7 +12,10 @@ from flask_mail import Message
 from backend import app, db, bcrypt, mail
 from backend.models import User, Contact
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from flask_cors import CORS
 
+# cors settings
+cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
 
 @app.route('/')
 @app.route('/home')
