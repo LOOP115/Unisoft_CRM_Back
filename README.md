@@ -7,8 +7,12 @@ A very small percentage of individuals may experience epileptic seizures when ex
 # Soft Website
 https://unisoft-app.herokuapp.com
 
+
 # Backend Api Doc
-https://documenter.getpostman.com/view/9959702/UUxzBnzt
+Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt
+
+Contacts: https://documenter.getpostman.com/view/9959702/UUxzCULr
+
 
 # Before running backend server install requirements as bellow
 
