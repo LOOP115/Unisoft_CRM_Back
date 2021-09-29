@@ -9,7 +9,7 @@ from flask_restful import Resource, reqparse
 from flask_mail import Message
 
 from backend import app, db, bcrypt, mail
-from backend.models import User
+from backend.models import User, Contact
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 
@@ -18,6 +18,8 @@ from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 # def home():
 #     return "home"
 
+# Authentication
+########################################################################
 
 def valid_account(username, email):
     has_username = User.query.filter_by(username=username).first()
@@ -33,7 +35,10 @@ def valid_account(username, email):
 
 @app.route("/register", methods=['POST'])
 def register():
-    request_data = json.loads(request.data)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
     valid_result = valid_account(request_data['username'], request_data['email'])
     if (valid_result == "Valid"):
         user = User(username=request_data['username'], email=request_data['email'], password=request_data['password'])
@@ -49,7 +54,11 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    request_data = json.loads(request.data)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+    
     user = User.query.filter_by(email=request_data['email']).first()
     if user and (request_data['password'] == user.password):
         login_user(user, remember=request_data)
@@ -113,7 +122,11 @@ def account():
         }
 
     if request.method == 'POST':
-        request_data = json.loads(request.data)
+        try:
+            request_data = json.loads(request.data)
+        except:
+            return {"error": "Json load error"}, 500
+
         valid_result = valid_account_update(request_data['username'], request_data['email'], request_data)
         if (valid_result == "Valid"):
             current_user.username = request_data['username']
@@ -132,7 +145,7 @@ def send_reset_email(user):
     msg = Message('Password Reset Request',
                   sender='noreply@unisoft.com',
                   recipients=[user.email])
-    msg.body = f'''To reset your password, visit the following link:
+    msg.body = f'''To reset your password, please visit the following link:
 http://127.0.0.1:5000//reset_password/{token}
 
 If you did not make this request then simply ignore this email and no changes will be made.
@@ -142,7 +155,11 @@ If you did not make this request then simply ignore this email and no changes wi
 
 @app.route("/reset_password", methods=['POST'])
 def reset_request():
-    request_data = json.loads(request.data)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
     user = User.query.filter_by(email=request_data['email']).first()
     if user:
         send_reset_email(user)
@@ -156,12 +173,111 @@ def reset_token(token):
     if user is None:
         return {"error": "Invalid or expired token"}, 300
     
-    request_data = json.loads(request.data)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
     user.password = request_data['password']
     db.session.commit()
     return {"userid": user.id}, 200
 
 
+# Contacts
+########################################################################
+@app.route('/contact/new', methods=['POST'])
+@login_required
+def new_contact():
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
 
+    try:
+        contact = Contact(firstname=request_data['firstname'], lastname=request_data['lastname'], 
+                          email=request_data['email'], phone=request_data['phone'], owner=current_user)
+    except:
+        return {"error": "Can't create contact"}, 300
+
+    db.session.add(contact)
+    db.session.commit()
+    return {
+        "contactid": contact.id,
+        "firstname": contact.firstname,
+        "lastname": contact.lastname,
+        "email": contact.email,
+        "phone": contact.phone,
+        "ownerid": current_user.id,
+        "owner": current_user.username
+    }, 200
+
+
+@app.route('/contact/<int:contact_id>', methods=['GET'])
+@login_required
+def get_contact(contact_id):
+    contact = Contact.query.get_or_404(contact_id)
+    return {
+        "contactid": contact.id,
+        "firstname": contact.firstname,
+        "lastname": contact.lastname,
+        "email": contact.email,
+        "phone": contact.phone,
+        "ownerid": current_user.id,
+        "owner": current_user.username
+    }, 200
+
+
+@app.route('/contact/<int:contact_id>/delete', methods=['POST'])
+@login_required
+def delete_contact(contact_id):
+    contact = Contact.query.get_or_404(contact_id)
+    if contact.owner != current_user:
+        abort(403)
+    db.session.delete(contact)
+    db.session.commit()
+    return "deleted", 200
+
+
+@app.route('/contact/<int:contact_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_contact(contact_id):
+    contact = Contact.query.get_or_404(contact_id)
+    if contact.owner != current_user:
+        abort(403)
+
+    if request.method == 'GET':
+        return {
+            "contactid": contact.id,
+            "firstname": contact.firstname,
+            "lastname": contact.lastname,
+            "email": contact.email,
+            "phone": contact.phone,
+            "ownerid": current_user.id,
+            "owner": current_user.username
+        }, 200
+
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
+    contact.firstname = request_data['firstname']
+    contact.lastname = request_data['lastname']
+    contact.email = request_data['email']
+    contact.phone = request_data['phone']
+    db.session.commit()
+    return {
+        "contactid": contact.id,
+        "firstname": contact.firstname,
+        "lastname": contact.lastname,
+        "email": contact.email,
+        "phone": contact.phone,
+        "ownerid": current_user.id,
+        "owner": current_user.username
+    }, 200
+
+
+# Activities
+########################################################################
 
 
