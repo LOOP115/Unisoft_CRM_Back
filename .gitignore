@@ -4,6 +4,7 @@ __pycache__/
 /backend/__pycache__/
 /backend/venv/
 venv/
+/test.py
 # dependencies
 /frontend/node_modules
 /frontend/.pnp
@@ -11,9 +12,6 @@ venv/
 
 # testing
 /frontend/coverage
-
-# production
-/frontend/build
 
 # misc
 /frontend/.DS_Store
