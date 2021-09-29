@@ -13,10 +13,10 @@ from backend.models import User, Contact
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 
-# @app.route('/')
-# @app.route('/home')
-# def home():
-#     return "home"
+@app.route('/')
+@app.route('/home')
+def home():
+    return "home"
 
 # Authentication
 ########################################################################
