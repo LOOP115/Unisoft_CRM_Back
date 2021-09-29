@@ -1,0 +1,60 @@
+body {
+  background-color: #f8f0df;
+  font-family: "Architects Daughter", cursive;
+  text-align: center;
+  font-size: 130%;
+}
+
+.container {
+  margin-left: 30%;
+  margin-top: 10%;
+  height: auto;
+  min-height: 500px;
+  max-width: 700px;
+  min-width: 700px;
+  background: #f1f5f8;
+  background-size: 100px 100px;
+  border-radius: 20px;
+  box-shadow: 4px 3px 7px 2px #00000040;
+  padding: 50px;
+  box-sizing: border-box;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.heading h1 {
+  transform: rotate(2deg);
+  padding: 0.2rem 1.2rem;
+  border-radius: 20% 5% 20% 5%/5% 20% 25% 20%;
+  background-color: #fdcb6e;
+  font-size: 1.5rem;
+}
+
+.form {
+  text-align: right;
+  margin-right: 35%;
+}
+
+.btn4 {
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 2px solid black;
+  margin: 10px;
+  text-align: center;
+  background-color: #345b63;
+  color: cornsilk;
+}
+
+.btn4:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #555555;
+}
+
+button:active {
+  box-shadow: 0 1px #666;
+  transform: translateY(1px);
+}
