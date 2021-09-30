@@ -8,7 +8,7 @@ def test_put():
   assert response.status_code!=404 and response.status_code!=500
 
 def test_register():
-  response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":123456})
+  response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":"123456"})
   assert response.status_code!=404 and response.status_code!=500
 
 def test_login():
