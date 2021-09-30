@@ -13,7 +13,7 @@ Contacts: https://documenter.getpostman.com/view/9959702/UUxzCULr <br/><br/>
 ## Install requirements to run the server
 Run ```pip install -r requirements.txt```<br/><br/>
 __Virtural environment:__
-* Run```source venv/bin/activate``` on Unix
+* Run ```source venv/bin/activate``` on Unix
 * Run ```source venv/scripts/activate``` or  ```venv/scripts/activate``` on Windows <br/><br/>
 
 ## Running backend server
