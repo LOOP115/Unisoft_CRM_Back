@@ -7,7 +7,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 #from flask_cors import CORS
 
-app = Flask(__name__, static_url_path='', static_folder='../frontend/build')
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ITPROJECT'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'

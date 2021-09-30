@@ -79,6 +79,7 @@ def test_addContact():
     })
   assert r.status_code<=400
 
+# get contact 1
 def test_getContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
