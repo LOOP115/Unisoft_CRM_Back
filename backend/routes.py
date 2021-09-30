@@ -165,7 +165,10 @@ def reset_request():
 
     user = User.query.filter_by(email=request_data['email']).first()
     if user:
-        send_reset_email(user)
+        try:
+            send_reset_email(user)
+        except:
+            return {"error": "resend"}, 300
         return {"userid": user.id}, 200
     return {"error": "Invalid email"}, 300
 
