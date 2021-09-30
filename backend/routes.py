@@ -44,7 +44,8 @@ def register():
         return {"error": "Json load error"}, 500
     valid_result = valid_account(request_data['username'], request_data['email'])
     if (valid_result == "Valid"):
-        user = User(username=request_data['username'], email=request_data['email'], password=request_data['password'])
+        hashed_password = bcrypt.generate_password_hash(request_data['password']).decode('utf-8')
+        user = User(username=request_data['username'], email=request_data['email'], password=hashed_password)
         db.session.add(user)
         db.session.commit()
         return {
@@ -63,7 +64,7 @@ def login():
         return {"error": "Json load error"}, 500
     
     user = User.query.filter_by(email=request_data['email']).first()
-    if user and (request_data['password'] == user.password):
+    if user and bcrypt.check_password_hash(user.password, request_data['password']):
         login_user(user, remember=request_data)
         return {
             "userid": current_user.id,
