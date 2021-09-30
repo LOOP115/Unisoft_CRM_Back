@@ -25,3 +25,4 @@ venv/
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
 test.py
+backend/site.db

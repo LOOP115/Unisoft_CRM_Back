@@ -24,6 +24,16 @@ def home():
 
 # Authentication
 ########################################################################
+def user_serializer(user):
+    return {
+        "userid": user.id,
+        "username": user.username,
+        "firstname": user.firstname,
+        "lastname": user.lastname,
+        "email": user.email
+    }
+
+
 def valid_account(username, email):
     has_username = User.query.filter_by(username=username).first()
     has_email = User.query.filter_by(email=email).first()
@@ -45,14 +55,11 @@ def register():
     valid_result = valid_account(request_data['username'], request_data['email'])
     if (valid_result == "Valid"):
         hashed_password = bcrypt.generate_password_hash(request_data['password']).decode('utf-8')
-        user = User(username=request_data['username'], email=request_data['email'], password=hashed_password)
+        user = User(username=request_data['username'], firstname=request_data['firstname'], lastname=request_data['lastname'], 
+                    email=request_data['email'], password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        return {
-            "userid": user.id,
-            "username": user.username,
-            "email": user.email
-        }, 200
+        return user_serializer(user), 200
     return {"error": valid_result}, 300
 
 
@@ -66,11 +73,7 @@ def login():
     user = User.query.filter_by(email=request_data['email']).first()
     if user and bcrypt.check_password_hash(user.password, request_data['password']):
         login_user(user, remember=request_data)
-        return {
-            "userid": current_user.id,
-            "username": current_user.username,
-            "email": current_user.email
-        }, 200
+        return user_serializer(current_user), 200
     return {"error": "Invalid email or password"}, 300
 
 
@@ -119,12 +122,8 @@ def valid_account_update(username, email, request_data):
 @login_required
 def account():
     if request.method == 'GET':
-        return {
-            "userid": current_user.id,
-            "username": current_user.username,
-            "email": current_user.email
-        }
-
+        return user_serializer(current_user), 200
+        
     if request.method == 'POST':
         try:
             request_data = json.loads(request.data)
@@ -134,13 +133,11 @@ def account():
         valid_result = valid_account_update(request_data['username'], request_data['email'], request_data)
         if (valid_result == "Valid"):
             current_user.username = request_data['username']
+            current_user.firstname = request_data['firstname']
+            current_user.lastname = request_data['lastname']
             current_user.email = request_data['email']
             db.session.commit()
-            return {
-                "userid": current_user.id,
-                "username": current_user.username,
-                "email": current_user.email
-            }
+        return user_serializer(current_user), 200
         return {"error": valid_result}, 300
 
 

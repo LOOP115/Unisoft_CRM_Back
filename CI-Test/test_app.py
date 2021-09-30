@@ -8,7 +8,7 @@ def test_put():
   assert response.status_code!=404 and response.status_code!=500
 
 def test_register():
-  response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", "email": "test@test.com", "password":"123456"})
   assert response.status_code!=404 and response.status_code!=500
 
 def test_login():
@@ -29,7 +29,7 @@ def test_validLogin():
 
 # test whether wrong password can log in
 def test_InvalidLogin():
-  response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", "email": "test@test.com", "password":"123456"})
   response = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"654321asd"})
   assert response.status_code!=200
 
@@ -52,7 +52,7 @@ def test_account():
 def test_updateAccount():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
-  r = requests.post(BASE + "account", cookies=cookies, json={"username":"test", "email": "test@test.com"})
+  r = requests.post(BASE + "account", cookies=cookies, json={"username":"update", "firstname":"py", "lastname":"bug", "email": "update@test.com"})
   requests.get(BASE + "logout", cookies=cookies)
   assert r.status_code < 400
 
