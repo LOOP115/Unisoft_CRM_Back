@@ -42,7 +42,6 @@ class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(20), nullable=False)
     lastname = db.Column(db.String(20), nullable=False)
-    # date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     company = db.Column(db.String(50), nullable=False)
@@ -50,7 +49,6 @@ class Contact(db.Model):
 
     def __repr__(self):
         return f"Contact('{self.firstname} {self.lastname}', '{self.phone}', '{self.email}', '{self.company}')"
-
 
 
 

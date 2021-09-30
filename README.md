@@ -1,27 +1,20 @@
-# Python Flask Backend for Unisoft CRM system
+# Python Flask Backend for Unisoft CRM System
 
-# Soft Website
-https://unisoft-crm.herokuapp.com
+## Heroku link
+https://unisoft-crm.herokuapp.com <br/><br/>
 
-# Backend API socket
-https://unisoft-backend.herokuapp.com/
+## Backend API socket
+https://unisoft-backend.herokuapp.com <br/><br/>
 
-# Backend Api Doc
-Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt
+## Backend Api Docs
+Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt <br/><br/>
+Contacts: https://documenter.getpostman.com/view/9959702/UUxzCULr <br/><br/>
 
-Contacts: https://documenter.getpostman.com/view/9959702/UUxzCULr
+## Install requirements to run the server
+Run ```pip install -r requirements.txt```<br/><br/>
+__Virtural environment:__
+* Run```source venv/bin/activate``` on Unix
+* Run ```source venv/scripts/activate``` or  ```venv/scripts/activate``` on Windows <br/><br/>
 
-
-# Before running backend server install requirements as bellow
-
-Windows: pip install -r requirements.txt
-Unix   : pip install -r requirements.txt
-
-if using under virtural environment using command bellow:
-Unix   : source venv/bin/activate
-Windows: source venv/scripts/activate  or  venv/scripts/activate
-
-# Running backend server
-
-Unix    : python3 run.app
-windows : python run.app
+## Running backend server
+Run ```flask run```

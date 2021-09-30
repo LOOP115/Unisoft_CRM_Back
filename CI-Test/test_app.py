@@ -95,3 +95,11 @@ def test_getContact():
   cookies = r.cookies
   r = requests.get(BASE + "contact/1",cookies=cookies)
   assert r.status_code == 200
+
+
+
+
+
+# Activities
+########################################################################
+
