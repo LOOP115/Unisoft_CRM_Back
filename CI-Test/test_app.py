@@ -52,7 +52,7 @@ def test_account():
 def test_updateAccount():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
-  r = requests.post(BASE + "account", cookies=cookies, json={"username":"update", "firstname":"py", "lastname":"bug", "email": "update@test.com"})
+  r = requests.post(BASE + "account", cookies=cookies, json={"username":"update", "firstname":"py", "lastname":"bug", "email": "test@test.com"})
   requests.get(BASE + "logout", cookies=cookies)
   assert r.status_code < 400
 
