@@ -16,5 +16,5 @@ __Virtural environment:__
 * Run ```source venv/bin/activate``` on Unix
 * Run ```source venv/scripts/activate``` or  ```venv/scripts/activate``` on Windows <br/><br/>
 
-## Running backend server
+## Start backend server
 Run ```flask run```
