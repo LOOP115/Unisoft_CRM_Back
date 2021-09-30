@@ -2,6 +2,7 @@ import os
 import secrets
 import json
 from PIL import Image
+from datetime import datetime
 from flask import Flask, jsonify, json
 from flask import render_template as rt
 from flask import url_for, flash, redirect, request, abort
@@ -22,6 +23,10 @@ cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
 def home():
     return "home"
 
+
+def get_date(date):
+    return datetime.strptime(date, '%Y-%m-%d').date()
+
 # Authentication
 ########################################################################
 def user_serializer(user):
@@ -30,7 +35,8 @@ def user_serializer(user):
         "username": user.username,
         "firstname": user.firstname,
         "lastname": user.lastname,
-        "email": user.email
+        "email": user.email,
+        "birth": user.birth
     }
 
 
@@ -56,7 +62,7 @@ def register():
     if (valid_result == "Valid"):
         hashed_password = bcrypt.generate_password_hash(request_data['password']).decode('utf-8')
         user = User(username=request_data['username'], firstname=request_data['firstname'], lastname=request_data['lastname'], 
-                    email=request_data['email'], password=hashed_password)
+                    email=request_data['email'], birth=get_date(request_data['birth']), password=hashed_password)
         db.session.add(user)
         db.session.commit()
         return user_serializer(user), 200
@@ -135,6 +141,7 @@ def account():
             current_user.username = request_data['username']
             current_user.firstname = request_data['firstname']
             current_user.lastname = request_data['lastname']
+            current_user.birth = get_date(request_data['birth'])
             current_user.email = request_data['email']
             db.session.commit()
         return user_serializer(current_user), 200

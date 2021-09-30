@@ -7,8 +7,12 @@ def test_put():
   response = requests.put(BASE + "test/Jack", json={"someData":"hello", "exampleData": 100})
   assert response.status_code!=404 and response.status_code!=500
 
+
+# Authentication
+########################################################################
 def test_register():
-  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", "email": "test@test.com", "password":"123456"})
+  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", 
+                                                    "email": "test@test.com", "birth": "1999-01-01", "password":"123456"})
   assert response.status_code!=404 and response.status_code!=500
 
 def test_login():
@@ -18,7 +22,8 @@ def test_login():
 
 # test whether registered account can log in or not
 def test_validLogin():
-  response = requests.post(BASE + "register", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", 
+                                                    "email": "test@test.com", "birth": "1999-01-01", "password":"123456"})
   if(response.status_code >= 500 or response.status_code == 404):
     assert response.status_code!=404 and response.status_code!=500
   
@@ -29,7 +34,8 @@ def test_validLogin():
 
 # test whether wrong password can log in
 def test_InvalidLogin():
-  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", "email": "test@test.com", "password":"123456"})
+  response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", 
+                                                    "email": "test@test.com", "birth": "1999-01-01", "password":"123456"})
   response = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"654321asd"})
   assert response.status_code!=200
 
@@ -52,7 +58,8 @@ def test_account():
 def test_updateAccount():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
-  r = requests.post(BASE + "account", cookies=cookies, json={"username":"update", "firstname":"py", "lastname":"bug", "email": "test@test.com"})
+  r = requests.post(BASE + "account", cookies=cookies, json={"username":"testupdate", "firstname":"py", "lastname":"test", 
+                                                              "email": "test@test.com", "birth": "1999-01-01", "password":"123456"})
   requests.get(BASE + "logout", cookies=cookies)
   assert r.status_code < 400
 
@@ -66,6 +73,9 @@ def test_resetPasswordInvalid():
   r = requests.post(BASE + "reset_password", json={"email": "xxxxx"})
   assert r.status_code == 300
 
+
+# Contacts
+########################################################################
 # test add new contact
 def test_addContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
