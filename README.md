@@ -8,7 +8,7 @@ A very small percentage of individuals may experience epileptic seizures when ex
 https://unisoft-crm.herokuapp.com
 
 # Backend API socket
-https://unisoft-app.herokuapp.com
+https://unisoft-backend.herokuapp.com/
 
 # Backend Api Doc
 Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt
