@@ -24,7 +24,7 @@ app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = "unisoft6969@gmail.com"
-app.config['MAIL_PASSWORD'] = "unisoftgei"
+app.config['MAIL_PASSWORD'] = "innrgezfveffibgt"
 mail = Mail(app)
 
 
