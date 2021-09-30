@@ -11,7 +11,7 @@ from flask_restful import Resource, reqparse
 from flask_mail import Message
 
 from backend import app, db, bcrypt, mail
-from backend.models import User, Contact
+from backend.models import User, Contact, Activity
 from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flask_cors import CORS
 
@@ -26,6 +26,9 @@ def home():
 
 def get_date(date):
     return datetime.strptime(date, '%Y-%m-%d').date()
+
+def get_datetime(date_time):
+    return datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S')
 
 # Authentication
 ########################################################################
@@ -191,8 +194,8 @@ def contact_serializer(contact):
         "email": contact.email,
         "phone": contact.phone,
         "company": contact.company,
-        "ownerid": current_user.id,
-        "owner": current_user.username
+        "ownerid": contact.owner.id,
+        "owner": contact.owner.username
     }
 
 
@@ -280,5 +283,65 @@ def company_contact(company):
 
 # Activities
 ########################################################################
+def activity_serializer(activity):
+    return {
+        "actid": activity.id,
+        "title": activity.title,
+        "desc": activity.desc,
+        "time": activity.time,
+        "location": activity.location,
+        "status": activity.status,
+        "creator": activity.creator.username,
+        "creatorid": activity.creator.id,
+        "invite": "test"
+    }
 
+
+@app.route('/activity/new', methods=['POST'])
+@login_required
+def new_activity():
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
+    try:
+        activity = Activity(title=request_data['title'], desc=request_data['desc'], 
+                            time=get_datetime(request_data['time']), location=request_data['location'], 
+                            status=request_data['status'], creator=current_user)
+    except:
+        return {"error": "Can't create activity"}, 300
+
+    db.session.add(activity)
+    db.session.commit()
+    return activity_serializer(activity), 200
+
+
+@app.route('/activity/<int:activity_id>', methods=['GET'])
+@login_required
+def get_activity(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    return activity_serializer(activity), 200
+
+
+@app.route('/activity/<int:activity_id>/delete', methods=['POST'])
+@login_required
+def delete_activity(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    db.session.delete(activity)
+    db.session.commit()
+    return "deleted", 200
+
+
+@app.route('/activity/all', methods=['GET'])
+@login_required
+def list_activity():
+    userid = current_user.id
+    try:
+        activity_list = Activity.query.filter_by(user_id=userid).all()
+    except:
+        return {"error": "Can't filter"}, 300
+    return jsonify([*map(activity_serializer, activity_list)]), 200
 

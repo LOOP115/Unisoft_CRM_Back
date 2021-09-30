@@ -20,6 +20,8 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     contact = db.relationship('Contact', backref='owner', lazy=True)
+    activity = db.relationship('Activity', backref='creator', lazy=True)
+
 
     def __repr__(self):
         return f"User('{self.username}', '{self.firstname} {self.lastname}', '{self.email}')"
@@ -38,6 +40,12 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
 
+events = db.Table('events', 
+    db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
+    db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), primary_key=True)
+)
+
+
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(20), nullable=False)
@@ -50,6 +58,20 @@ class Contact(db.Model):
     def __repr__(self):
         return f"Contact('{self.firstname} {self.lastname}', '{self.phone}', '{self.email}', '{self.company}')"
 
+
+class Activity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    desc = db.Column(db.String(200), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(10), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    events = db.relationship('Contact', secondary=events, 
+                        lazy='subquery', backref=db.backref('activities', lazy=True))
+
+    def __repr__(self):
+        return f"Contact('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}')"
 
 
 if not os.path.exists("site.db"):
