@@ -55,3 +55,32 @@ def test_updateAccount():
   r = requests.post(BASE + "account", cookies=cookies, json={"username":"test", "email": "test@test.com"})
   requests.get(BASE + "logout", cookies=cookies)
   assert r.status_code < 400
+
+# test reset password with valid email
+def test_resetPassword():
+  r = requests.post(BASE + "reset_password", json={"email": "test@test.com"})
+  assert r.status_code == 200
+
+# test reset password with invalid email
+def test_resetPasswordInvalid():
+  r = requests.post(BASE + "reset_password", json={"email": "xxxxx"})
+  assert r.status_code == 300
+
+# test add new contact
+def test_addContact():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "contact/new",cookies=cookies, json={
+    "firstname": "contact",
+    "lastname": "1",
+    "email": "contact1@uni.com",
+    "phone": "12345678",
+    "company": "unimelb"
+    })
+  assert r.status_code<=400
+
+def test_getContact():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "contact/1",cookies=cookies)
+  assert r.status_code == 200
