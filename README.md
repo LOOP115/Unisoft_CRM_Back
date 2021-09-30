@@ -7,8 +7,8 @@ https://unisoft-crm.herokuapp.com <br/><br/>
 https://unisoft-backend.herokuapp.com <br/><br/>
 
 ## Backend Api Docs
-Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt <br/><br/>
-Contacts: https://documenter.getpostman.com/view/9959702/UUxzCULr <br/><br/>
+* Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt
+* Contacts: https://documenter.getpostman.com/view/9959702/UUxzCULr <br/><br/>
 
 ## Install requirements to run the server
 Run ```pip install -r requirements.txt```<br/><br/>
