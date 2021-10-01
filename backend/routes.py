@@ -21,7 +21,7 @@ cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
 @app.route('/')
 @app.route('/home')
 def home():
-    return "home"
+    return "This is backend home, see more pls follow README"
 
 
 def get_date(date):
