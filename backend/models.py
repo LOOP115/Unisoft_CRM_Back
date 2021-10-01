@@ -74,5 +74,5 @@ class Activity(db.Model):
         return f"Contact('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}')"
 
 
-if not os.path.exists("site.db"):
+if not os.path.exists("/site.db"):
     db.create_all()
