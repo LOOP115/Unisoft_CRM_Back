@@ -380,5 +380,23 @@ def activity_invite_delete(activity_id, contact_id):
     return "deleted", 200
 
 
+def send_invite_email(contact):
+    msg = Message('New Activity Invitation',
+                  sender='noreply@unisoft.com',
+                  recipients=[contact.email])
+    msg.body = f'''I am glad to invite you to our new event.'''
+    mail.send(msg)
+
+
+@app.route('/activity/<int:activity_id>/invite/send', methods=['POST'])
+@login_required
+def send_invite(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    for contact in activity.events:
+        send_invite_email(contact)
+    return "sent", 300
+
 
 
