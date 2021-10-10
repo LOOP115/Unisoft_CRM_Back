@@ -65,8 +65,8 @@ def test_updateAccount():
 
 # test reset password with valid email
 def test_resetPassword():
-  requests.post(BASE + "register", json={"username":"test8888", "firstname":"loa", "lastname":"ding", 
-                                                    "email": "szej18@gmail.com", "birth": "1999-01-01", "password":"123456"})
+  r = requests.post(BASE + "register", json={"username":"test8888", "firstname":"loa", "lastname":"ding", 
+                                             "email": "szej18@gmail.com", "birth": "1999-01-01", "password":"123456"})
   r = requests.post(BASE + "reset_password", json={"email": "szej18@gmail.com"})
   assert r.status_code == 200
 
@@ -114,8 +114,6 @@ def test_getContact():
 
 # test delete contact
 def test_deleteContact():
-  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
-  cookies = r.cookies
   # delete valid contact
   r = requests.post(BASE + "contact/2/delete")
   assert r.status_code == 200
