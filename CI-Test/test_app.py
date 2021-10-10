@@ -80,16 +80,26 @@ def test_resetPasswordInvalid():
 ########################################################################
 # test add new contact
 def test_addContact():
-  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
-  cookies = r.cookies
-  r = requests.post(BASE + "contact/new",cookies=cookies, json={
+  r1 = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r1.cookies
+  r1 = requests.post(BASE + "contact/new",cookies=cookies, json={
     "firstname": "contact",
     "lastname": "1",
     "email": "contact1@uni.com",
     "phone": "12345678",
     "company": "unimelb"
     })
-  assert r.status_code<=400
+  assert r1.status_code == 200
+
+  r2 = requests.post(BASE + "contact/new",cookies=cookies, json={
+    "firstname": "contact",
+    "lastname": "2",
+    "email": "contact2@uni.com",
+    "phone": "12345678",
+    "company": "unisoft"
+    })
+  assert r2.status_code == 200
+
 
 # get contact 1
 def test_getContact():
