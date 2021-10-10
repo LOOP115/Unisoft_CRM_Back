@@ -71,7 +71,7 @@ class Activity(db.Model):
                         lazy='subquery', backref=db.backref('activities', lazy=True))
 
     def __repr__(self):
-        return f"Contact('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}')"
+        return f"Activity('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}')"
 
 
 if not os.path.exists("/site.db"):

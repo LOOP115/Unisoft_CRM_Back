@@ -293,7 +293,7 @@ def activity_serializer(activity):
         "status": activity.status,
         "creator": activity.creator.username,
         "creatorid": activity.creator.id,
-        "invite": "test"
+        "invite": [*map(contact_serializer, activity.events)]
     }
 
 
@@ -344,4 +344,41 @@ def list_activity():
     except:
         return {"error": "Can't filter"}, 300
     return jsonify([*map(activity_serializer, activity_list)]), 200
+
+
+@app.route('/activity/<int:activity_id>/invite', methods=['POST'])
+@login_required
+def activity_invite(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+    
+    for contact in request_data:
+        new_attend = Contact.query.get_or_404(contact['contact_id'])
+        activity.events.append(new_attend)
+    db.session.commit()
+    return activity_serializer(activity), 200
+
+
+@app.route('/activity/<int:activity_id>/invite/<int:contact_id>/delete', methods=['POST'])
+@login_required
+def activity_invite_delete(activity_id, contact_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    
+    contact = Contact.query.get_or_404(contact_id)
+    if contact.owner != current_user:
+        abort(403)
+    
+    activity.events.remove(contact)
+    db.session.commit()
+    return "deleted", 200
+
+
+
 
