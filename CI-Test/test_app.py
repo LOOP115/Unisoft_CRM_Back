@@ -150,8 +150,6 @@ def test_filterContactCompany():
   cookies = r.cookies
   r = requests.get(BASE + "contact/unisoft",cookies=cookies)
   assert r.status_code == 200
-  r = requests.get(BASE + "contact/unimelb",cookies=cookies)
-  assert r.status_code == 300
 
 
 # Activities
