@@ -78,34 +78,46 @@ def test_resetPasswordInvalid():
 
 # Contacts
 ########################################################################
-# test add new contact
+# test add new contacts
 def test_addContact():
-  r1 = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
-  cookies = r1.cookies
-  r1 = requests.post(BASE + "contact/new",cookies=cookies, json={
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  # add contact 1
+  r = requests.post(BASE + "contact/new",cookies=cookies, json={
     "firstname": "contact",
     "lastname": "1",
     "email": "contact1@uni.com",
     "phone": "12345678",
     "company": "unimelb"
     })
-  assert r1.status_code == 200
-
-  r2 = requests.post(BASE + "contact/new",cookies=cookies, json={
+  assert r.status_code == 200
+  # add contact 2
+  r = requests.post(BASE + "contact/new",cookies=cookies, json={
     "firstname": "contact",
     "lastname": "2",
     "email": "contact2@uni.com",
     "phone": "12345678",
     "company": "unisoft"
     })
-  assert r2.status_code == 200
+  assert r.status_code == 200
 
-
-# get contact 1
+# test get contacts
 def test_getContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
+  # get valid contact
   r = requests.get(BASE + "contact/1",cookies=cookies)
+  assert r.status_code == 200
+  # invalid get
+  r = requests.get(BASE + "contact/3",cookies=cookies)
+  assert r.status_code == 404
+
+# test delete contact
+def test_deleteContact():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  # delete valid contact
+  r = requests.post(BASE + "contact/2/delete")
   assert r.status_code == 200
 
 
