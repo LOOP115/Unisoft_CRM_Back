@@ -16,7 +16,7 @@ from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flask_cors import CORS
 
 # cors settings
-cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
+cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True, withCredentials = True)
 
 @app.route('/')
 @app.route('/home')
