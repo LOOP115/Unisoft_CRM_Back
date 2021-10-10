@@ -27,8 +27,10 @@ def home():
 def get_date(date):
     return datetime.strptime(date, '%Y-%m-%d').date()
 
+
 def get_datetime(date_time):
     return datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S')
+
 
 # Authentication
 ########################################################################
@@ -297,6 +299,22 @@ def activity_serializer(activity):
     }
 
 
+def send_invite_email(contact):
+    msg = Message('New Activity Invitation',
+                  sender='noreply@unisoft.com',
+                  recipients=[contact.email])
+    msg.body = f'''I am glad to invite you to our new event.'''
+    mail.send(msg)
+
+
+def send_update_email(contact):
+    msg = Message('Activity Updates',
+                  sender='noreply@unisoft.com',
+                  recipients=[contact.email])
+    msg.body = f'''The activity has following updates.'''
+    mail.send(msg)
+
+
 @app.route('/activity/new', methods=['POST'])
 @login_required
 def new_activity():
@@ -380,14 +398,6 @@ def activity_invite_delete(activity_id, contact_id):
     return "deleted", 200
 
 
-def send_invite_email(contact):
-    msg = Message('New Activity Invitation',
-                  sender='noreply@unisoft.com',
-                  recipients=[contact.email])
-    msg.body = f'''I am glad to invite you to our new event.'''
-    mail.send(msg)
-
-
 @app.route('/activity/<int:activity_id>/invite/send', methods=['POST'])
 @login_required
 def send_invite(activity_id):
@@ -399,4 +409,36 @@ def send_invite(activity_id):
     return "sent", 300
 
 
+@app.route('/activity/<int:activity_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_activity(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    if request.method == 'GET':
+        return activity_serializer(activity), 200
+
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
+    activity.title = request_data['title']
+    activity.desc = request_data['desc']
+    activity.time = get_datetime(request_data['time'])
+    activity.location = request_data['location']
+    activity.status = request_data['status']
+    db.session.commit()
+    return activity_serializer(activity), 200
+
+
+@app.route('/activity/<int:activity_id>/update/send', methods=['POST'])
+@login_required
+def send_update(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    for contact in activity.events:
+        send_update_email(contact)
+    return "sent", 300
 
