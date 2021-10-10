@@ -104,7 +104,7 @@ def test_addContact():
 # test get contacts
 def test_getContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
-  cookies = r.cookies
+  cookies = r.cookies 
   # get valid contact
   r = requests.get(BASE + "contact/1",cookies=cookies)
   assert r.status_code == 200
@@ -112,10 +112,15 @@ def test_getContact():
   r = requests.get(BASE + "contact/3",cookies=cookies)
   assert r.status_code == 404
 
+# test get all contacts
+def test_getAllContacts():
+  r = requests.get(BASE + "contact/all",cookies=cookies)
+  assert r.status_code == 200
+
 # test delete contact
 def test_deleteContact():
   # delete valid contact
-  r = requests.post(BASE + "contact/2/delete")
+  r = requests.post(BASE + "contact/1/delete")
   assert r.status_code == 200
 
 
