@@ -126,11 +126,32 @@ def test_deleteContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   # delete valid contact
-  r = requests.post(BASE + "contact/1/delete",cookies=cookies)
+  r = requests.post(BASE + "contact/2/delete",cookies=cookies)
   assert r.status_code == 200
 
+# test update contact
+def test_updateContact():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "contact/1/update",cookies=cookies)
+  assert r.status_code == 200
+  r = requests.post(BASE + "contact/1/update",cookies=cookies, json={
+    "firstname": "contact",
+    "lastname": "11",
+    "email": "contact11@uni.com",
+    "phone": "12345678",
+    "company": "unisoft"
+    })
+  assert r.status_code == 200
 
-
+# test filtering contacts by company
+def test_filterContactCompany():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "contact/unisoft",cookies=cookies)
+  assert r.status_code == 200
+  r = requests.get(BASE + "contact/unimelb",cookies=cookies)
+  assert r.status_code == 300
 
 
 # Activities
