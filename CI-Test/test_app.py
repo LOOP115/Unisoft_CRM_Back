@@ -154,4 +154,41 @@ def test_filterContactCompany():
 
 # Activities
 ########################################################################
+def test_addActivity():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "activity/new",cookies=cookies, json={
+    "title": "Activity1",
+    "desc": "Fantastic",
+    "time": "2022-1-1 11:11:11",
+    "location": "Mars",
+    "status": "upcoming"
+  })
+  assert r.status_code == 200
+    r = requests.post(BASE + "activity/new",cookies=cookies, json={
+    "title": "Activity2",
+    "desc": "Amazing",
+    "time": "2022-2-2 22:22:22",
+    "location": "Mecury",
+    "status": "upcoming"
+  })
+  assert r.status_code == 200
+  r = requests.post(BASE + "activity/new",cookies=cookies, json={
+    "title": "Activity3",
+    "desc": "Awesome",
+    "time": "2022-10-10 10:10:10",
+    "location": "Earth",
+    "status": "upcoming"
+  })
+  assert r.status_code == 200
+
+def test_deleteActivity():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  # delete valid activity
+  r = requests.post(BASE + "activity/3/delete",cookies=cookies)
+  assert r.status_code == 200
+
+
+
 
