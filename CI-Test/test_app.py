@@ -15,6 +15,9 @@ def test_register():
   response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", 
                                                     "email": "test@test.com", "birth": "1999-01-01", "password":"123456"})
   assert response.status_code!=404 and response.status_code!=500
+  response = requests.post(BASE + "register", json={"username":"abcd", "firstname":"ab", "lastname":"cd", 
+                                                    "email": "abcd@test.com", "birth": "1999-01-01", "password":"123456"})
+  assert response.status_code!=404 and response.status_code!=500
 
 # test login
 def test_login():
@@ -88,7 +91,7 @@ def test_addContact():
   r = requests.post(BASE + "contact/new",cookies=cookies, json={
     "firstname": "contact",
     "lastname": "1",
-    "email": "contact1@uni.com",
+    "email": "abcd@test.com",
     "phone": "12345678",
     "company": "unimelb"
     })
@@ -273,10 +276,39 @@ def test_sendUpdate():
   })
   assert r.status_code == 200
 
+# test get invitation
+def test_getIncident():
+  r = requests.post(BASE + "login", json={"username":"abcd", "email": "abcd@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "incident/1",cookies=cookies)
+  assert r.status_code == 200
+
+# test get all invitations
+def test_getIncident():
+  r = requests.post(BASE + "login", json={"username":"abcd", "email": "abcd@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "incident/all",cookies=cookies)
+  assert r.status_code == 200
+
+# test accept/reject invitation
+def test_replyIncident():
+  r = requests.post(BASE + "login", json={"username":"abcd", "email": "abcd@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "incident/1/accept",cookies=cookies)
+  assert r.status_code == 200
+  r = requests.post(BASE + "incident/1/reject",cookies=cookies)
+  assert r.status_code == 200
+
+# test delete invitation
+def test_acceptIncident():
+  r = requests.post(BASE + "login", json={"username":"abcd", "email": "abcd@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "incident/1/delete",cookies=cookies)
+  assert r.status_code == 200
+
 
 # Finally delete the test account
 ########################################################################
-# delete the account
 def test_deleteAccount():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
