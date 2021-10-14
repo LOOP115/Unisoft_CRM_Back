@@ -406,7 +406,7 @@ def send_invite(activity_id):
         abort(403)
     for contact in activity.events:
         send_invite_email(contact)
-    return "sent", 300
+    return "sent", 200
 
 
 @app.route('/activity/<int:activity_id>/update', methods=['GET', 'POST'])
@@ -440,5 +440,5 @@ def send_update(activity_id):
         abort(403)
     for contact in activity.events:
         send_update_email(contact)
-    return "sent", 300
+    return "sent", 200
 

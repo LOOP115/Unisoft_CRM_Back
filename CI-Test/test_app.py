@@ -231,9 +231,28 @@ def test_deleteParticipant():
   r = requests.post(BASE + "activity/1/invite/3/delete",cookies=cookies)
   assert r.status_code == 200
 
+def test_updateActivity():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "activity/2/update",cookies=cookies)
+  assert r.status_code == 200
+  r = requests.post(BASE + "activity/3/update",cookies=cookies, json={
+    "title": "Activity33",
+    "desc": "Unprecedented",
+    "time": "2022-11-11 11:11:11",
+    "location": "Sun",
+    "status": "upcoming"
+  })
+  assert r.status_code == 200
+
 def test_sendInvitation():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   r = requests.post(BASE + "activity/1/invite/send",cookies=cookies)
   assert r.status_code == 200
 
+def test_sendUpdate():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "activity/1/update/send",cookies=cookies)
+  assert r.status_code == 200
