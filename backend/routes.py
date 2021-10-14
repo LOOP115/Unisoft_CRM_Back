@@ -447,24 +447,6 @@ def send_invite(activity_id):
     return "sent", 200
 
 
-@app.route('/incident/<int:incident_id>', methods=['GET'])
-@login_required
-def get_incident(incident_id):
-    incident = Incident.query.get_or_404(incident_id)
-    return incident_serializer(incident), 200
-
-
-@app.route('/incident/all', methods=['GET'])
-@login_required
-def list_incident():
-    userid = current_user.id
-    try:
-        incident_list = Incident.query.filter_by(user_id=userid).all()
-    except:
-        return {"error": "Can't filter"}, 300
-    return jsonify([*map(incident_serializer, incident_list)]), 200
-
-
 @app.route('/activity/<int:activity_id>/update', methods=['GET', 'POST'])
 @login_required
 def update_activity(activity_id):
@@ -504,4 +486,55 @@ def send_update(activity_id):
     for contact in activity.events:
         send_email(contact, title, content)
     return "sent", 200
+
+
+@app.route('/incident/<int:incident_id>', methods=['GET'])
+@login_required
+def get_incident(incident_id):
+    incident = Incident.query.get_or_404(incident_id)
+    return incident_serializer(incident), 200
+
+
+@app.route('/incident/all', methods=['GET'])
+@login_required
+def list_incident():
+    userid = current_user.id
+    try:
+        incident_list = Incident.query.filter_by(user_id=userid).all()
+    except:
+        return {"error": "Can't filter"}, 300
+    return jsonify([*map(incident_serializer, incident_list)]), 200
+
+
+@app.route('/incident/<int:incident_id>/delete', methods=['POST'])
+@login_required
+def delete_incident(incident_id):
+    incident = Incident.query.get_or_404(incident_id)
+    if incident.attend != current_user:
+        abort(403)
+    db.session.delete(incident)
+    db.session.commit()
+    return "deleted", 200
+
+
+@app.route('/incident/<int:incident_id>/accept', methods=['POST'])
+@login_required
+def accept_incident(incident_id):
+    incident = Incident.query.get_or_404(incident_id)
+    if incident.attend != current_user:
+        abort(403)
+    incident.accept = True
+    db.session.commit()
+    return "accept", 200
+
+
+@app.route('/incident/<int:incident_id>/reject', methods=['POST'])
+@login_required
+def reject_incident(incident_id):
+    incident = Incident.query.get_or_404(incident_id)
+    if incident.attend != current_user:
+        abort(403)
+    incident.accept = False
+    db.session.commit()
+    return "reject", 200
 
