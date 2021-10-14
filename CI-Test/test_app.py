@@ -255,14 +255,20 @@ def test_updateActivity():
 def test_sendInvitation():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
-  r = requests.post(BASE + "activity/1/invite/send",cookies=cookies)
+  r = requests.post(BASE + "activity/1/invite/send", cookies=cookies, json={
+    "title": "New",
+    "content": "new"
+  })
   assert r.status_code == 200
 
 # test sending updates mails
 def test_sendUpdate():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
-  r = requests.post(BASE + "activity/1/update/send",cookies=cookies)
+  r = requests.post(BASE + "activity/1/update/send", cookies=cookies, json={
+    "title": "Update",
+    "content": "update"
+  })
   assert r.status_code == 200
 
 
