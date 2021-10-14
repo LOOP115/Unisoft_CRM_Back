@@ -1,4 +1,3 @@
-from datetime import datetime
 from backend import db, login_manager, app
 from flask_login import UserMixin
 import os
@@ -23,7 +22,6 @@ class User(db.Model, UserMixin):
     activity = db.relationship('Activity', backref='creator', lazy=True)
     incident = db.relationship('Incident', backref='attend', lazy=True)
 
-
     def __repr__(self):
         return f"User('{self.username}', '{self.firstname} {self.lastname}', '{self.email}')"
 
@@ -41,10 +39,10 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
 
-events = db.Table('events', 
-    db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
-    db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), primary_key=True)
-)
+events = db.Table('events',
+                  db.Column('activity_id', db.Integer, db.ForeignKey('activity.id'), primary_key=True),
+                  db.Column('contact_id', db.Integer, db.ForeignKey('contact.id'), primary_key=True)
+                  )
 
 
 class Contact(db.Model):
@@ -68,8 +66,8 @@ class Activity(db.Model):
     location = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(10), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    events = db.relationship('Contact', secondary=events, 
-                        lazy='subquery', backref=db.backref('activities', lazy=True))
+    events = db.relationship('Contact', secondary=events,
+                             lazy='subquery', backref=db.backref('activities', lazy=True))
 
     def __repr__(self):
         return f"Activity('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}')"
@@ -87,7 +85,7 @@ class Incident(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Activity('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}', '{self.accept}')"
+        return f"Activity('{self.title}', '{self.time}', '{self.location}', '{self.status}', '{self.accept}') "
 
 
 if not os.path.exists("/site.db"):

@@ -26,3 +26,5 @@ venv/
 /frontend/yarn-error.log*
 /test.py
 *.db
+.idea/inspectionProfiles/Project_Default.xml
+.idea/misc.xml

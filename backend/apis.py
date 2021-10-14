@@ -1,7 +1,5 @@
 from flask_restful import Resource, reqparse
-import requests
-from backend import api, db
-from backend.models import User
+from backend import api
 
 put_args = reqparse.RequestParser()
 put_args.add_argument("someData", type=str, help="Put some data", required=True)

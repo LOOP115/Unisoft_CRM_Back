@@ -1,13 +1,8 @@
-import os
-import secrets
 import json
-from PIL import Image
 from datetime import datetime
-from flask import Flask, jsonify, json
-from flask import render_template as rt
-from flask import url_for, flash, redirect, request, abort
+from flask import jsonify, json
+from flask import request, abort
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_restful import Resource, reqparse
 from flask_mail import Message
 
 from backend import app, db, bcrypt, mail
@@ -15,7 +10,8 @@ from backend.models import User, Contact, Activity, Incident
 from flask_cors import CORS
 
 # cors settings
-cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True, withCredentials = True)
+cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True, withCredentials=True)
+
 
 @app.route('/')
 @app.route('/home')
@@ -63,10 +59,11 @@ def register():
     except:
         return {"error": "Json load error"}, 500
     valid_result = valid_account(request_data['username'], request_data['email'])
-    if (valid_result == "Valid"):
+    if valid_result == "Valid":
         hashed_password = bcrypt.generate_password_hash(request_data['password']).decode('utf-8')
-        user = User(username=request_data['username'], firstname=request_data['firstname'], lastname=request_data['lastname'], 
-                    email=request_data['email'], birth=get_date(request_data['birth']), password=hashed_password)
+        user = User(username=request_data['username'], firstname=request_data['firstname'],
+                    lastname=request_data['lastname'], email=request_data['email'],
+                    birth=get_date(request_data['birth']), password=hashed_password)
         db.session.add(user)
         db.session.commit()
         return user_serializer(user), 200
@@ -79,7 +76,7 @@ def login():
         request_data = json.loads(request.data)
     except:
         return {"error": "Json load error"}, 500
-    
+
     user = User.query.filter_by(email=request_data['email']).first()
     if user and bcrypt.check_password_hash(user.password, request_data['password']):
         login_user(user, remember=request_data)
@@ -120,7 +117,7 @@ def valid_account_update(username, email, request_data):
 def account():
     if request.method == 'GET':
         return user_serializer(current_user), 200
-        
+
     if request.method == 'POST':
         try:
             request_data = json.loads(request.data)
@@ -128,14 +125,14 @@ def account():
             return {"error": "Json load error"}, 500
 
         valid_result = valid_account_update(request_data['username'], request_data['email'], request_data)
-        if (valid_result == "Valid"):
+        if valid_result == "Valid":
             current_user.username = request_data['username']
             current_user.firstname = request_data['firstname']
             current_user.lastname = request_data['lastname']
             current_user.birth = get_date(request_data['birth'])
             current_user.email = request_data['email']
             db.session.commit()
-        return user_serializer(current_user), 200
+            return user_serializer(current_user), 200
         return {"error": valid_result}, 300
 
 
@@ -174,7 +171,7 @@ def reset_token(token):
     user = User.verify_reset_token(token)
     if user is None:
         return {"error": "Invalid or expired token"}, 300
-    
+
     try:
         request_data = json.loads(request.data)
     except:
@@ -206,6 +203,7 @@ def delete_account():
         return {"error": "Can't delete account"}, 300
     return "Account deleted", 200
 
+
 # Contacts
 ########################################################################
 def contact_serializer(contact):
@@ -230,8 +228,8 @@ def new_contact():
         return {"error": "Json load error"}, 500
 
     try:
-        contact = Contact(firstname=request_data['firstname'], lastname=request_data['lastname'], 
-                          email=request_data['email'], phone=request_data['phone'], 
+        contact = Contact(firstname=request_data['firstname'], lastname=request_data['lastname'],
+                          email=request_data['email'], phone=request_data['phone'],
                           company=request_data['company'], owner=current_user)
     except:
         return {"error": "Can't create contact"}, 300
@@ -246,6 +244,7 @@ def new_contact():
 def get_contact(contact_id):
     contact = Contact.query.get_or_404(contact_id)
     return contact_serializer(contact), 200
+
 
 @app.route('/contact/<int:contact_id>/delete', methods=['POST'])
 @login_required
@@ -347,8 +346,8 @@ def new_activity():
         return {"error": "Json load error"}, 500
 
     try:
-        activity = Activity(title=request_data['title'], desc=request_data['desc'], 
-                            time=get_datetime(request_data['time']), location=request_data['location'], 
+        activity = Activity(title=request_data['title'], desc=request_data['desc'],
+                            time=get_datetime(request_data['time']), location=request_data['location'],
                             status=request_data['status'], creator=current_user)
     except:
         return {"error": "Can't create activity"}, 300
@@ -397,7 +396,7 @@ def activity_invite(activity_id):
         request_data = json.loads(request.data)
     except:
         return {"error": "Json load error"}, 500
-    
+
     for contact in request_data:
         new_attend = Contact.query.get_or_404(contact['contact_id'])
         activity.events.append(new_attend)
@@ -411,11 +410,11 @@ def activity_invite_delete(activity_id, contact_id):
     activity = Activity.query.get_or_404(activity_id)
     if activity.creator != current_user:
         abort(403)
-    
+
     contact = Contact.query.get_or_404(contact_id)
     if contact.owner != current_user:
         abort(403)
-    
+
     activity.events.remove(contact)
     db.session.commit()
     return "deleted", 200
@@ -438,11 +437,11 @@ def send_invite(activity_id):
         send_email(contact, title, content)
         user = User.query.filter_by(email=contact.email).first()
         if (user):
-            incident = Incident(title=activity.title, desc=activity.desc, 
-                    time=activity.time, location=activity.location, 
-                    status=activity.status, accept=False, launcher=current_user.id)
+            incident = Incident(title=activity.title, desc=activity.desc,
+                                time=activity.time, location=activity.location,
+                                status=activity.status, accept=False, launcher=current_user.id)
             user.incident.append(incident)
-    
+
     db.session.commit()
     return "sent", 200
 
