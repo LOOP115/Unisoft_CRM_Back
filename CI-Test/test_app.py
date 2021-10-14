@@ -172,6 +172,7 @@ def test_filterContactCompany():
 
 # Activities
 ########################################################################
+# test add new activities
 def test_addActivity():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
@@ -200,6 +201,7 @@ def test_addActivity():
   })
   assert r.status_code == 200
 
+# test delete activity
 def test_deleteActivity():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
@@ -207,6 +209,7 @@ def test_deleteActivity():
   r = requests.post(BASE + "activity/3/delete",cookies=cookies)
   assert r.status_code == 200
 
+# test get activites
 def test_getActivity():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
@@ -215,6 +218,7 @@ def test_getActivity():
   r = requests.get(BASE + "activity/all",cookies=cookies)
   assert r.status_code == 200
 
+# test inviting contacts to activity
 def test_inviteContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
@@ -225,19 +229,21 @@ def test_inviteContact():
   ])
   assert r.status_code == 200
 
+# test delete participant from activity
 def test_deleteParticipant():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   r = requests.post(BASE + "activity/1/invite/3/delete",cookies=cookies)
   assert r.status_code == 200
 
+# test update activity content
 def test_updateActivity():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   r = requests.get(BASE + "activity/2/update",cookies=cookies)
   assert r.status_code == 200
-  r = requests.post(BASE + "activity/3/update",cookies=cookies, json={
-    "title": "Activity33",
+  r = requests.post(BASE + "activity/2/update",cookies=cookies, json={
+    "title": "Activity22",
     "desc": "Unprecedented",
     "time": "2022-11-11 11:11:11",
     "location": "Sun",
@@ -245,12 +251,14 @@ def test_updateActivity():
   })
   assert r.status_code == 200
 
+# test sending invition mails
 def test_sendInvitation():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   r = requests.post(BASE + "activity/1/invite/send",cookies=cookies)
   assert r.status_code == 200
 
+# test sending updates mails
 def test_sendUpdate():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
