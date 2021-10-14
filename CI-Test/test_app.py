@@ -100,6 +100,24 @@ def test_addContact():
     "company": "unisoft"
     })
   assert r.status_code == 200
+  # add contact 3
+  r = requests.post(BASE + "contact/new",cookies=cookies, json={
+    "firstname": "contact",
+    "lastname": "3",
+    "email": "contact3@uni.com",
+    "phone": "12345678",
+    "company": "unisoft"
+    })
+  assert r.status_code == 200
+    # add contact 4
+  r = requests.post(BASE + "contact/new",cookies=cookies, json={
+    "firstname": "contact",
+    "lastname": "4",
+    "email": "contact4@uni.com",
+    "phone": "12345678",
+    "company": "unimelb"
+    })
+  assert r.status_code == 200
 
 # test get contacts
 def test_getContact():
@@ -126,7 +144,7 @@ def test_deleteContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   # delete valid contact
-  r = requests.post(BASE + "contact/2/delete",cookies=cookies)
+  r = requests.post(BASE + "contact/4/delete",cookies=cookies)
   assert r.status_code == 200
 
 # test update contact
@@ -207,4 +225,9 @@ def test_inviteContact():
   ])
   assert r.status_code == 200
 
+def test_deleteParticipant():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "activity/1/invite/3/delete",cookies=cookies)
+  assert r.status_code == 200
 
