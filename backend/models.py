@@ -92,4 +92,3 @@ class Incident(db.Model):
 
 if not os.path.exists("/site.db"):
     db.create_all()
-

@@ -156,9 +156,9 @@ def test_deleteContact():
 def test_updateContact():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
-  r = requests.get(BASE + "contact/1/update",cookies=cookies)
+  r = requests.get(BASE + "contact/2/update",cookies=cookies)
   assert r.status_code == 200
-  r = requests.post(BASE + "contact/1/update",cookies=cookies, json={
+  r = requests.post(BASE + "contact/2/update",cookies=cookies, json={
     "firstname": "contact",
     "lastname": "11",
     "email": "contact11@uni.com",
@@ -300,7 +300,7 @@ def test_replyIncident():
   assert r.status_code == 200
 
 # test delete invitation
-def test_acceptIncident():
+def test_deleteIncident():
   r = requests.post(BASE + "login", json={"username":"abcd", "email": "abcd@test.com", "password":"123456"})
   cookies = r.cookies
   r = requests.post(BASE + "incident/1/delete",cookies=cookies)

@@ -537,4 +537,3 @@ def reject_incident(incident_id):
     incident.accept = False
     db.session.commit()
     return "reject", 200
-
