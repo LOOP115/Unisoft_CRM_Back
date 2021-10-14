@@ -189,6 +189,22 @@ def test_deleteActivity():
   r = requests.post(BASE + "activity/3/delete",cookies=cookies)
   assert r.status_code == 200
 
+def test_getActivity():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.get(BASE + "activity/1",cookies=cookies)
+  assert r.status_code == 200
+  r = requests.get(BASE + "activity/all",cookies=cookies)
+  assert r.status_code == 200
 
+def test_inviteContact():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "activity/1/invite",cookies=cookies, json=[
+    {"contact_id": 1},
+    {"contact_id": 2},
+    {"contact_id": 3}
+  ])
+  assert r.status_code == 200
 
 
