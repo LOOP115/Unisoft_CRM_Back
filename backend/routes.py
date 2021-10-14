@@ -186,6 +186,27 @@ def reset_token(token):
     return {"userid": user.id}, 200
 
 
+@app.route("/deleteAccount", methods=['POST'])
+@login_required
+def delete_account():
+    userid = current_user.id
+    try:
+        contact_list = Contact.query.filter_by(user_id=userid).all()
+        for cont in contact_list:
+            db.session.delete(cont)
+
+        activity_list = Activity.query.filter_by(user_id=userid).all()
+        for act in activity_list:
+            db.session.delete(act)
+
+        logout_user()
+        user = User.query.get_or_404(userid)
+        db.session.delete(user)
+        db.session.commit()
+    except:
+        return {"error": "Can't delete account"}, 300
+    return "Account deleted", 200
+
 # Contacts
 ########################################################################
 def contact_serializer(contact):

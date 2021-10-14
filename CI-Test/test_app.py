@@ -264,3 +264,13 @@ def test_sendUpdate():
   cookies = r.cookies
   r = requests.post(BASE + "activity/1/update/send",cookies=cookies)
   assert r.status_code == 200
+
+
+# Finally delete the test account
+########################################################################
+# delete the account
+def test_deleteAccount():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "deleteAccount",cookies=cookies)
+  assert r.status_code == 200
