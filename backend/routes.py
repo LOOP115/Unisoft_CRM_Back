@@ -320,19 +320,9 @@ def activity_serializer(activity):
     }
 
 
-def send_invite_email(contact):
-    msg = Message('New Activity Invitation',
-                  sender='noreply@unisoft.com',
-                  recipients=[contact.email])
-    msg.body = f'''I am glad to invite you to our new event.'''
-    mail.send(msg)
-
-
-def send_update_email(contact):
-    msg = Message('Activity Updates',
-                  sender='noreply@unisoft.com',
-                  recipients=[contact.email])
-    msg.body = f'''The activity has following updates.'''
+def send_email(contact, title, content):
+    msg = Message(title, sender='noreply@unisoft.com', recipients=[contact.email])
+    msg.body = content
     mail.send(msg)
 
 
@@ -425,8 +415,15 @@ def send_invite(activity_id):
     activity = Activity.query.get_or_404(activity_id)
     if activity.creator != current_user:
         abort(403)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
+    title = request_data['title']
+    content = request_data['content']
     for contact in activity.events:
-        send_invite_email(contact)
+        send_email(contact, title, content)
     return "sent", 200
 
 
@@ -459,7 +456,14 @@ def send_update(activity_id):
     activity = Activity.query.get_or_404(activity_id)
     if activity.creator != current_user:
         abort(403)
+    try:
+        request_data = json.loads(request.data)
+    except:
+        return {"error": "Json load error"}, 500
+
+    title = request_data['title']
+    content = request_data['content']
     for contact in activity.events:
-        send_update_email(contact)
+        send_email(contact, title, content)
     return "sent", 200
 
