@@ -129,7 +129,7 @@ def test_getContact():
   r = requests.get(BASE + "contact/2",cookies=cookies)
   assert r.status_code == 200
   # invalid get
-  r = requests.get(BASE + "contact/3",cookies=cookies)
+  r = requests.get(BASE + "contact/10",cookies=cookies)
   assert r.status_code == 404
 
 # test get all contacts
@@ -229,5 +229,11 @@ def test_deleteParticipant():
   r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
   cookies = r.cookies
   r = requests.post(BASE + "activity/1/invite/3/delete",cookies=cookies)
+  assert r.status_code == 200
+
+def test_sendInvitation():
+  r = requests.post(BASE + "login", json={"username":"test", "email": "test@test.com", "password":"123456"})
+  cookies = r.cookies
+  r = requests.post(BASE + "activity/1/invite/send",cookies=cookies)
   assert r.status_code == 200
 
