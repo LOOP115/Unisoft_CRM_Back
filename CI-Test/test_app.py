@@ -165,7 +165,7 @@ def test_addActivity():
     "status": "upcoming"
   })
   assert r.status_code == 200
-    r = requests.post(BASE + "activity/new",cookies=cookies, json={
+  r = requests.post(BASE + "activity/new",cookies=cookies, json={
     "title": "Activity2",
     "desc": "Amazing",
     "time": "2022-2-2 22:22:22",
