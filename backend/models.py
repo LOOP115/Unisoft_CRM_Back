@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     contact = db.relationship('Contact', backref='owner', lazy=True)
     activity = db.relationship('Activity', backref='creator', lazy=True)
+    incident = db.relationship('Incident', backref='attend', lazy=True)
 
 
     def __repr__(self):
@@ -72,6 +73,21 @@ class Activity(db.Model):
 
     def __repr__(self):
         return f"Activity('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}')"
+
+
+class Incident(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    desc = db.Column(db.String(200), nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(10), nullable=False)
+    accept = db.Column(db.Boolean, nullable=False)
+    launcher = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Activity('{self.title}', '{self.desc}', '{self.time}', '{self.location}', '{self.status}', '{self.accept}')"
 
 
 if not os.path.exists("/site.db"):

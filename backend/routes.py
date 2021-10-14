@@ -11,8 +11,7 @@ from flask_restful import Resource, reqparse
 from flask_mail import Message
 
 from backend import app, db, bcrypt, mail
-from backend.models import User, Contact, Activity
-from backend.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from backend.models import User, Contact, Activity, Incident
 from flask_cors import CORS
 
 # cors settings
@@ -320,6 +319,19 @@ def activity_serializer(activity):
     }
 
 
+def incident_serializer(incident):
+    return {
+        "actid": incident.id,
+        "title": incident.title,
+        "desc": incident.desc,
+        "time": incident.time,
+        "location": incident.location,
+        "status": incident.status,
+        "accept": incident.accept,
+        "creatorid": incident.launcher
+    }
+
+
 def send_email(contact, title, content):
     msg = Message(title, sender='noreply@unisoft.com', recipients=[contact.email])
     msg.body = content
@@ -424,7 +436,33 @@ def send_invite(activity_id):
     content = request_data['content']
     for contact in activity.events:
         send_email(contact, title, content)
+        user = User.query.filter_by(email=contact.email).first()
+        if (user):
+            incident = Incident(title=activity.title, desc=activity.desc, 
+                    time=activity.time, location=activity.location, 
+                    status=activity.status, accept=False, launcher=current_user.id)
+            user.incident.append(incident)
+    
+    db.session.commit()
     return "sent", 200
+
+
+@app.route('/incident/<int:incident_id>', methods=['GET'])
+@login_required
+def get_incident(incident_id):
+    incident = Incident.query.get_or_404(incident_id)
+    return incident_serializer(incident), 200
+
+
+@app.route('/incident/all', methods=['GET'])
+@login_required
+def list_incident():
+    userid = current_user.id
+    try:
+        incident_list = Incident.query.filter_by(user_id=userid).all()
+    except:
+        return {"error": "Can't filter"}, 300
+    return jsonify([*map(incident_serializer, incident_list)]), 200
 
 
 @app.route('/activity/<int:activity_id>/update', methods=['GET', 'POST'])

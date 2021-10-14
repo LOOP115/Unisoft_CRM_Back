@@ -10,11 +10,13 @@ def test_put():
 
 # Authentication
 ########################################################################
+# test registration
 def test_register():
   response = requests.post(BASE + "register", json={"username":"test", "firstname":"py", "lastname":"test", 
                                                     "email": "test@test.com", "birth": "1999-01-01", "password":"123456"})
   assert response.status_code!=404 and response.status_code!=500
 
+# test login
 def test_login():
   r = {"email": "test@test.com", "password":"123456"}
   response = requests.post(BASE + "login", json= r)
