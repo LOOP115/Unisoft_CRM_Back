@@ -88,5 +88,5 @@ class Incident(db.Model):
         return f"Activity('{self.title}', '{self.time}', '{self.location}', '{self.status}', '{self.accept}') "
 
 
-if not os.path.exists("/site.db"):
-    db.create_all()
+db.drop_all()
+db.create_all()
