@@ -9,7 +9,7 @@ from backend.models import User, Contact, Activity, Incident
 from flask_cors import CORS
 
 # cors settings
-cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True, withCredentials=True)
+cors = CORS(app, supports_credentials=True, withCredentials=True)
 
 
 @app.route('/')
