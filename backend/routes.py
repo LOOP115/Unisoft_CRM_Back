@@ -6,9 +6,10 @@ from flask_mail import Message
 
 from backend import app, db, bcrypt, mail
 from backend.models import User, Contact, Activity, Incident
+from flask_cors import CORS
 
-
-
+# cors settings
+cors = CORS(app, supports_credentials=True, withCredentials=True)
 
 
 @app.route('/')
