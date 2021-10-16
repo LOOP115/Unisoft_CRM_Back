@@ -5,8 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_cors import CORS
 
 app = Flask(__name__)
+# cors settings
+cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True, withCredentials=True)
+
 app.config['SECRET_KEY'] = 'ITPROJECT'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
