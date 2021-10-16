@@ -4,7 +4,7 @@
 https://unisoft-crm.herokuapp.com <br/><br/>
 
 ## Backend API socket
-https://unisoft-backend.herokuapp.com <br/><br/>
+https://unisoft-back.herokuapp.com <br/><br/>
 
 ## Backend Api Docs
 * Authenication: https://documenter.getpostman.com/view/9959702/UUxzBnzt

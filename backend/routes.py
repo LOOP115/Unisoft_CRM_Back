@@ -141,7 +141,7 @@ def send_reset_email(user):
                   sender='noreply@unisoft.com',
                   recipients=[user.email])
     msg.body = f'''To reset your password, please visit the following link:
-https://unisoft-backend.herokuapp.com/reset_password/{token}
+https://unisoft-back.herokuapp.com/reset_password/{token}
 
 If you did not make this request then simply ignore this email and no changes will be made.
 '''
