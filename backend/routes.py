@@ -1,7 +1,6 @@
 import json
 from datetime import datetime
-from flask import jsonify, json
-from flask import request, abort
+from flask import jsonify, json, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
