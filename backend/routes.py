@@ -244,7 +244,7 @@ def get_contact(contact_id):
     return contact_serializer(contact), 200
 
 
-@app.route('/contact/<int:contact_id>/delete', methods=['POST'])
+@app.route('/contact/<int:contact_id>/delete', methods=['GET'])
 @login_required
 def delete_contact(contact_id):
     contact = Contact.query.get_or_404(contact_id)
