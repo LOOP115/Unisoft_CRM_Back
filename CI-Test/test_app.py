@@ -335,7 +335,7 @@ def test_replyIncident():
 def test_getAllParticipants():
     r = requests.post(BASE + "login", json={"username": "test", "email": "test@test.com", "password": "123456"})
     cookies = r.cookies
-    r = requests.post(BASE + "activity/1/participants", cookies=cookies)
+    r = requests.get(BASE + "activity/1/participants", cookies=cookies)
     assert r.status_code == 200
 
 
