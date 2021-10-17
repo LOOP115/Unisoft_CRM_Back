@@ -176,7 +176,8 @@ def reset_token(token):
     except:
         return {"error": "Json load error"}, 500
 
-    user.password = request_data['password']
+    hashed_password = bcrypt.generate_password_hash(request_data['password']).decode('utf-8')
+    user.password = hashed_password
     db.session.commit()
     return {"userid": user.id}, 200
 
