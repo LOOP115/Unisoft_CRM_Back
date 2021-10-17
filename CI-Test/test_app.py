@@ -330,6 +330,14 @@ def test_replyIncident():
     assert r.status_code == 200
 
 
+# test get all particpants
+def test_getAllParticipants():
+    r = requests.post(BASE + "login", json={"username": "abcd", "email": "abcd@test.com", "password": "123456"})
+    cookies = r.cookies
+    r = requests.post(BASE + "activity/1/participants", cookies=cookies)
+    assert r.status_code == 200
+
+
 # test delete invitation
 def test_deleteIncident():
     r = requests.post(BASE + "login", json={"username": "abcd", "email": "abcd@test.com", "password": "123456"})
