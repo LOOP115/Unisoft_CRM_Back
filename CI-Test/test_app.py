@@ -167,7 +167,7 @@ def test_deleteContact():
     r = requests.post(BASE + "login", json={"username": "test", "email": "test@test.com", "password": "123456"})
     cookies = r.cookies
     # delete valid contact
-    r = requests.get(BASE + "contact/4/delete", cookies=cookies)
+    r = requests.post(BASE + "contact/4/delete", cookies=cookies)
     assert r.status_code == 200
 
 
