@@ -419,6 +419,29 @@ def activity_invite_delete(activity_id, contact_id):
     return "deleted", 200
 
 
+@app.route('/activity/<int:activity_id>/participants', methods=['get'])
+@login_required
+def activity_participants(activity_id):
+    activity = Activity.query.get_or_404(activity_id)
+    if activity.creator != current_user:
+        abort(403)
+    result = [*map(contact_serializer, activity.events)]
+    
+    for contact in result:
+        user = User.query.filter_by(email=contact['email']).first()
+        if (user):
+            incident = Incident.query.filter_by(user_id=user.id, title=activity.title, location=activity.location, 
+                                                time=activity.time).first()
+            if (incident):
+                contact['accept'] = incident.accept
+            else:
+                contact['accept'] = "Invitation not sent"
+        else:
+            contact['accept'] = "Not a user"
+
+    return jsonify(result), 200
+
+
 @app.route('/activity/<int:activity_id>/invite/send', methods=['POST'])
 @login_required
 def send_invite(activity_id):

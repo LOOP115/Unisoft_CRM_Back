@@ -86,7 +86,3 @@ class Incident(db.Model):
 
     def __repr__(self):
         return f"Activity('{self.title}', '{self.time}', '{self.location}', '{self.status}', '{self.accept}') "
-
-
-db.drop_all()
-db.create_all()
