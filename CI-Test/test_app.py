@@ -1,9 +1,5 @@
 import requests
-from backend import db
 
-
-db.drop_all()
-db.create_all()
 
 BASE = "http://127.0.0.1:5000/"
 
