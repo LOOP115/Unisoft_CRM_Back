@@ -1,4 +1,9 @@
 import requests
+from backend import db
+
+
+db.drop_all()
+db.create_all()
 
 BASE = "http://127.0.0.1:5000/"
 
@@ -332,7 +337,7 @@ def test_replyIncident():
 
 # test get all particpants
 def test_getAllParticipants():
-    r = requests.post(BASE + "login", json={"username": "abcd", "email": "abcd@test.com", "password": "123456"})
+    r = requests.post(BASE + "login", json={"username": "test", "email": "test@test.com", "password": "123456"})
     cookies = r.cookies
     r = requests.post(BASE + "activity/1/participants", cookies=cookies)
     assert r.status_code == 200
