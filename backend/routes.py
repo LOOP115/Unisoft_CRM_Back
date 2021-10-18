@@ -100,6 +100,10 @@ def valid_account_update(username, email, request_data):
     if request_data['email'] != current_user.email:
         has_email = User.query.filter_by(email=email).first()
         count -= 1
+    if request_data['firstname'] != current_user.firstname:
+        count -= 1
+    if request_data['lastname'] != current_user.lastname:
+        count -= 1
     if has_username and has_email:
         return "Username and email have been taken"
     if has_username:
