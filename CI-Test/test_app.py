@@ -94,7 +94,7 @@ def test_resetPassword():
 # test reset password with invalid email
 def test_resetPasswordInvalid():
     r = requests.post(BASE + "reset_password", json={"email": "xxxxx"})
-    assert r.status_code == 300
+    assert r.status_code == 200
 
 
 # Contacts
