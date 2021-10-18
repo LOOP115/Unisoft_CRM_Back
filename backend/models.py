@@ -1,6 +1,5 @@
 from backend import db, login_manager, app
 from flask_login import UserMixin
-import os
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
