@@ -144,8 +144,8 @@ def send_reset_email(user):
     msg = Message('Password Reset Request',
                   sender='noreply@unisoft.com',
                   recipients=[user.email])
-    msg.body = f'''To reset your password, please visit the following link:
-https://unisoft-back.herokuapp.com/reset_password/{token}
+    msg.body = f'''To reset your password, please use the following token.
+{token}
 
 If you did not make this request then simply ignore this email and no changes will be made.
 '''
@@ -169,16 +169,17 @@ def reset_request():
     return {"error": "Invalid email"}, 300
 
 
-@app.route("/reset_password/<token>", methods=['POST'])
-def reset_token(token):
-    user = User.verify_reset_token(token)
-    if user is None:
-        return {"error": "Invalid or expired token"}, 300
-
+@app.route("/reset_password/verify", methods=['POST'])
+def reset_token():
     try:
         request_data = json.loads(request.data)
     except:
         return {"error": "Json load error"}, 500
+    
+    token = request_data['token']
+    user = User.verify_reset_token(token)
+    if user is None:
+        return {"error": "Invalid or expired token"}, 300
 
     hashed_password = bcrypt.generate_password_hash(request_data['password']).decode('utf-8')
     user.password = hashed_password
