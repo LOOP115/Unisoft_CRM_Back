@@ -82,19 +82,19 @@ def test_updateAccount():
     assert r.status_code < 400
 
 
-# test reset password with valid email
-def test_resetPassword():
-    r = requests.post(BASE + "register", json={"username": "test8888", "firstname": "loa", "lastname": "ding",
-                                               "email": "szej18@gmail.com", "birth": "1999-01-01",
-                                               "password": "123456"})
-    r = requests.post(BASE + "reset_password", json={"email": "szej18@gmail.com"})
-    assert r.status_code == 200
+# # test reset password with valid email
+# def test_resetPassword():
+#     r = requests.post(BASE + "register", json={"username": "test8888", "firstname": "loa", "lastname": "ding",
+#                                                "email": "szej18@gmail.com", "birth": "1999-01-01",
+#                                                "password": "123456"})
+#     r = requests.post(BASE + "reset_password", json={"email": "szej18@gmail.com"})
+#     assert r.status_code == 200
 
 
-# test reset password with invalid email
-def test_resetPasswordInvalid():
-    r = requests.post(BASE + "reset_password", json={"email": "xxxxx"})
-    assert r.status_code == 200
+# # test reset password with invalid email
+# def test_resetPasswordInvalid():
+#     r = requests.post(BASE + "reset_password", json={"email": "xxxxx"})
+#     assert r.status_code == 200
 
 
 # Contacts
