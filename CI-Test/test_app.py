@@ -192,7 +192,7 @@ def test_updateContact():
 def test_filterContactCompany():
     r = requests.post(BASE + "login", json={"username": "test", "email": "test@test.com", "password": "123456"})
     cookies = r.cookies
-    r = requests.get(BASE + "contact/unisoft", cookies=cookies)
+    r = requests.get(BASE + "contact/filter/unisoft", cookies=cookies)
     assert r.status_code == 200
 
 
