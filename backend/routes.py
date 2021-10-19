@@ -12,8 +12,8 @@ from flask_cors import CORS
 
 
 cors = CORS(app, supports_credentials=True, withCredentials=True)
-# Base = "https://unisoft-crm.herokuapp.com/"
-Base = "http://localhost:3000/"
+Base = "https://unisoft-crm.herokuapp.com/"
+# Base = "http://localhost:3000/"
 
 @app.route('/')
 @app.route('/home')
