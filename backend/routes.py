@@ -103,9 +103,9 @@ def valid_account_update(username, email, request_data):
     if request_data['email'] != current_user.email:
         has_email = User.query.filter_by(email=email).first()
         count -= 1
-    if request_data['firstname'] != current_user.firstname:
+    if request_data['firstname'] != current_user.firstname or request_data['lastname'] != current_user.lastname:
         count -= 1
-    if request_data['lastname'] != current_user.lastname:
+    if get_date(request_data['birth']) != current_user.birth:
         count -= 1
     if has_username and has_email:
         return "Username and email have been taken"
@@ -292,7 +292,7 @@ def list_contact():
     return jsonify([*map(contact_serializer, contact_list)]), 200
 
 
-@app.route('/contact/<string:company>', methods=['GET'])
+@app.route('/contact/filter/<string:company>', methods=['GET'])
 @login_required
 def company_contact(company):
     userid = current_user.id
@@ -428,11 +428,11 @@ def activity_participants(activity_id):
     if activity.creator != current_user:
         abort(403)
     result = [*map(contact_serializer, activity.events)]
-    
+
     for contact in result:
         user = User.query.filter_by(email=contact['email']).first()
         if (user):
-            incident = Incident.query.filter_by(user_id=user.id, title=activity.title, location=activity.location, 
+            incident = Incident.query.filter_by(user_id=user.id, title=activity.title, location=activity.location,
                                                 time=activity.time).first()
             if (incident):
                 contact['accept'] = incident.accept
