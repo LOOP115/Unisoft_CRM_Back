@@ -320,6 +320,7 @@ def activity_serializer(activity):
 
 
 def incident_serializer(incident):
+    creator = User.query.get(incident.launcher)
     return {
         "actid": incident.id,
         "title": incident.title,
@@ -328,7 +329,9 @@ def incident_serializer(incident):
         "location": incident.location,
         "status": incident.status,
         "accept": incident.accept,
-        "creatorid": incident.launcher
+        "creatorid": incident.launcher,
+        "creatorFirstName": creator.firstname,
+        "creatorLastName": creator.lastname
     }
 
 
