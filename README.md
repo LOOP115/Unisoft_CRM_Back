@@ -19,3 +19,13 @@ __Virtural environment:__
 
 ## Start backend server
 Run ```flask run```
+
+## Deploy app on Heroku
+* Create Heroku account
+* Create requirements.txt file and record down all external library
+* Create Procfile file and add line ```web: gunicorn app:app``` (since we are using gunicorn to deploy)
+* Create a new app on heroku by clicking new on heroku dashboard
+* Decide a app name and chose which server you want to use
+* Connect heroku to github and ask authentication on github
+* Enable automatic deploy below and wait for CI to pass
+* Click on Deploy branch
